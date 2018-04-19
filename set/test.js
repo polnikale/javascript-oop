@@ -1,15 +1,9 @@
 const Set = require('./');
 
 describe('Set', () => {
-    let set;
-
-    beforeEach(() => {
-        set = new Set();
-    });
-
     describe('Set.constructor()', () => {
         test('возвращает объект типа `Set`', () => {
-            expect(set).toBeInstanceOf(Set);
+            expect(new Set()).toBeInstanceOf(Set);
         });
 
         test('принимает элементы для добавления', () => {
@@ -21,8 +15,7 @@ describe('Set', () => {
 
     describe('Set.size', () => {
         test('возвращает количество элементов', () => {
-            set.add('eggs');
-            set.add('apples');
+            let set = new Set(1, 2);
 
             expect(set.size).toBe(2);
         });
@@ -30,63 +23,71 @@ describe('Set', () => {
 
     describe('Set.values', () => {
         test('возвращает массив элементов', () => {
-            set.add('eggs');
-            set.add('apples');
+            let set = new Set(1, 2);
 
-            expect(set.values).toEqual(['eggs', 'apples']);
+            expect(set.values).toEqual([1, 2]);
         });
     });
 
     describe('Set.has()', () => {
+        let set;
+
+        beforeEach(() => set = new Set());
+
         test('возвращает `false` если элемента нет', () => {
-            expect(set.has('eggs')).toBe(false);
+            expect(set.has(1)).toBe(false);
         });
 
         test('возвращает `true` если элемент есть', () => {
-            set.add('eggs');
+            set.add(1);
     
-            expect(set.has('eggs')).toBe(true);
+            expect(set.has(1)).toBe(true);
         });
     });
 
     describe('Set.add()', () => {
+        let set;
+
+        beforeEach(() => set = new Set());
+
         test('добавляет элемент', () => {
-            set.add('eggs');
+            set.add(1);
     
-            expect(set.has('eggs')).toBe(true);
+            expect(set.has(1)).toBe(true);
         });
 
         test('не добавляет элемент, если он уже там есть', () => {
-            set.add('eggs');
-            set.add('eggs');
+            set.add(1);
+            set.add(1);
     
             expect(set.size).toBe(1);
         });
     });
 
     describe('Set.remove()', () => {
+        let set;
+
+        beforeEach(() => set = new Set(1, 2));
+
         test('удаляет элемент', () => {
-            set.add('eggs');
-            set.remove('eggs');
+            set.remove(2);
     
-            expect(set.size).toBe(0);
+            expect(set.size).toBe(1);
         });
 
         test('возвращает `true` если элемент был удален', () => {
-            set.add('eggs');
-    
-            expect(set.remove('eggs')).toBe(true);
+            expect(set.remove(2)).toBe(true);
         });
 
         test('возвращает `false` если элемент не был удален', () => {
-            expect(set.remove('eggs')).toBe(false);
+            expect(set.remove(3)).toBe(false);
         });
     });
 
     describe('Set.clear()', () => {
         test('удаляет все элементы', () => {
-            set.add('eggs');
-            set.add('apples');
+            let set = new Set(1, 2);
+            
             set.clear();
     
             expect(set.size).toBe(0);
