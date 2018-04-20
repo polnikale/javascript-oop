@@ -11,3 +11,9 @@ git checkout basics
 ```sh
 git checkout task1
 ```
+
+## Инкапсуляция
+
+```sh
+git checkout encapsulation
+```
