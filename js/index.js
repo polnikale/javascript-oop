@@ -1,12 +1,18 @@
-const panels = document.querySelectorAll('.panel');
+import Tab from './tab.js';
+import TabBar from './tab-bar.js';
+
+const tabBarElement = document.querySelector('.tab-bar');
+const tabElements = Array.of(...document.querySelectorAll('.tab'));
+const panelElements = document.querySelectorAll('.panel');
 
 const tabBar = new TabBar({
-    element: document.querySelector('.tab-bar'),
+    element: tabBarElement,
+    tabs: tabElements.map(element => new Tab({ element })),
     onChange: handleChange
 });
 
 function handleChange(activeTab) {
-    panels.forEach(panel => {
+    panelElements.forEach(panel => {
         if (panel.id === activeTab.id) {
             panel.classList.add('active');
         } else {
