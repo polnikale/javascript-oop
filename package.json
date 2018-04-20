@@ -1,0 +1,16 @@
+{
+  "name": "javascipt-oop",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "jest --verbose",
+    "test:watch": "jest --verbose --watch"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-jest": "^22.4.3",
+    "babel-preset-env": "^1.6.1",
+    "jest": "^22.4.3",
+    "jsdom": "^11.8.0"
+  }
+}
