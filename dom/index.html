@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Textfield</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <div id="output"></div>
+    </div>
+
+    <script src="textfield.js"></script>
+    <script>
+        let app = document.querySelector('#app');
+        let output = app.querySelector('#output');
+
+        let textfield = new Textfield({
+            id: 'username',
+            className: 'textfield',
+            required: true,
+            onChange: value => output.textContent = value,
+            validate: value => value === ''
+        });
+
+        app.appendChild(textfield.element);
+    </script>
+</body>
+</html>

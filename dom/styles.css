@@ -1,0 +1,25 @@
+.textfield {
+    background-color: #f9fafa;
+    border-color: #d4d9dd;
+    transition: .2s;
+    margin: 0;
+    font-size: 1rem;
+    padding: .75rem 1rem;
+    outline: none;
+    border: 2px solid #d4d9dd;
+    border-radius: 4px;
+    box-shadow: 0;
+    box-sizing: border-box;
+    color: #40484a;
+}
+
+.textfield.focused {
+    background-color: #fff;
+    border-color: #8c9aa6;
+}
+
+.textfield.invalid {
+    background-color: #fff;
+    margin-bottom: 0;
+    border-color: #ed5a5a;
+}
