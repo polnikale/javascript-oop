@@ -1,6 +1,6 @@
 const Queue = require('./');
 
-xdescribe('Queue', () => {
+describe('Queue', () => {
     describe('Queue.constructor()', () => {
         test('возвращает объект типа `Queue`', () => {
             expect(new Queue()).toBeInstanceOf(Queue);

@@ -1,6 +1,6 @@
 const Stack = require('./');
 
-xdescribe('Stack', () => {
+describe('Stack', () => {
     describe('Stack.constructor()', () => {
         test('возвращает объект типа `Stack`', () => {
             expect(new Stack()).toBeInstanceOf(Stack);

@@ -1,6 +1,6 @@
 const Set = require('./');
 
-xdescribe('Set', () => {
+describe('Set', () => {
     describe('Set.constructor()', () => {
         test('возвращает объект типа `Set`', () => {
             expect(new Set()).toBeInstanceOf(Set);

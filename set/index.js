@@ -1,96 +1,102 @@
 class Set {
-    /**
-     * Создает сет, опционально принимая элементы для добавления
-     * @param {...*} [items] Добавляемые элементы
-     */
-    constructor() {
-        
-    }
+constructor(...items) {
+    this._items = items;
+}
 
-    /**
-     * Возвращает количество элементов в сете
-     * @returns {number}
-     */
-    get size() {
-        
-    }
+get size() {
+    return this._items.length;
+}
 
-    /**
-     * Возвращает массив элементов сета
-     * @returns {Array}
-     */
-    get values() {
-        
-    }
+get values() {
+    return this._items;
+}
 
-    /**
-     * Добавляет элемент в сет
-     * @param {*} item
-     */
-    add() {
-        
+remove(item) {
+    const itemIndex = this._items.indexOf(item);
+    if (itemIndex !== -1) {
+    this._items.splice(itemIndex, 1);
+    return true;
+    } else {
+    return false;
     }
+}
 
-    /**
-     * Проверяет наличие элемента в сете
-     * @param {*} item
-     * @returns {boolean}
-     */
-    has() {
-        
-    }
+has(item) {
+    return this._items.includes(item);
+}
 
-    /**
-     * Удаляет элемент из сета и возвращает `true` если элемент удален и `false` если нет
-     * @param {*} item
-     * @returns {boolean}
-     */
-    remove() {
-        
+add(item) {
+    if (!this.has(item)) {
+    this._items.push(item);
     }
+}
 
-    /**
-     * Удаляет все элементы в сете
-     */
-    clear() {
-        
-    }
+clear() {
+    this._items = [];
+}
 
-    /**
-     * Возращает сет состоящий из элементов двух сетов
-     * @param {Set} set
-     * @returns {Set}
-     */
-    union() {
-        
+union(set) {
+    //легче перебирать "множество", в которм меньше элементов
+    let newSet;
+    let neededSetValues = set.values;
+    if (this.size >= neededSetValues.length) {
+    newSet = new Set(...this.values);
+    neededSetValues.map((elem) => {
+        if (!this.has(elem)) {
+        newSet.add(elem);
+        }
+    });
+    } else {
+    newSet = new Set(...neededSetValues);
+    this.values.map((elem) => {
+        if (!neededSetValues.includes(elem)) {
+        newSet.add(elem);
+        }
+    });
     }
+    return newSet;
+}
 
-    /**
-     * Возращает сет состоящий из элементов которые присутствуют в обоих сетах
-     * @param {Set} set
-     * @returns {Set}
-     */
-    intersection() {
-        
+intersection(set) {
+    const newSet = new Set();
+    const neededSetValues = set.values;
+    if (this.size >= neededSetValues.length) {
+    neededSetValues.map((elem) => {
+        if (this.has(elem)) {
+        newSet.add(elem);
+        }
+    });
+    } else {
+    this.values.map((elem) => {
+        if (neededSetValues.includes(elem)) {
+        newSet.add(elem);
+        }
+    });
     }
+    return newSet;
+}
 
-    /**
-     * Возращает сет состоящий из элементов присутствующих в первом сете, и отсутствующих во втором
-     * @param {Set} set
-     * @returns {Set}
-     */
-    difference() {
-        
-    }
+difference(set) {
+    const newSet = new Set();
+    const neededSetValues = set.values;
+    this.values.map((elem) => {
+        if (!neededSetValues.includes(elem)) {
+        newSet.add(elem);
+        }
+    });
+    return newSet;
+}
 
-    /**
-     * Возвращает `true` если сет содержит в себе все элементы из друого сета
-     * @param {Set} set
-     * @returns {boolean}
-     */
-    isSubset() {
-        
+isSubset(set) {
+    const neededSetValues = set.values;
+    for (let elem of this.values) {
+        if (!neededSetValues.includes(elem)) {
+            return false;
+        }
     }
+    return true;
+}
+
 }
 
 module.exports = Set;

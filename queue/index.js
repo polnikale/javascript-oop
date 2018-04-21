@@ -1,45 +1,30 @@
 class Queue {
-    /**
-     * Создает очередь, опционально принимая элементы для добавления
-     * @param {...*} [items] Добавляемые элементы
-     */
-    constructor() {}
-
-    /**
-     * Возвращает количество элементов в очереди
-     * @returns {number}
-     */
-    get size() {}
-
-    /**
-     * Возвращает `true` если очередь пустая, в противном случае возвращает `false`
-     * @returns {boolean}
-     */
-    get isEmpty() {}
-
-    /**
-     * Возвращает первый элемент в очереди
-     * @returns {*}
-     */
-    get front() {}
-
-    /**
-     * Возвращает последний элемент в очереди
-     * @returns {*}
-     */
-    get back() {}
-
-    /**
-     * Добавляет элемент в очередь
-     * @param {*} item 
-     */
-    enqueue() {}
-
-    /**
-     * Удаляет первый элемент из очереди и возвращает его
-     * @returns {*}
-     */
-    dequeue () {}
-}
+    constructor(...elems) {
+      this._queue = elems;
+    }
+  
+    get size() {
+      return this._queue.length;
+    }
+  
+    get isEmpty() {
+      return this._queue.length === 0;
+    }
+  
+    get front() {
+      return this._queue[0];
+    }
+  
+    get back() {
+      return this._queue[this.size - 1];
+    }
+  
+    enqueue(elem) {
+      this._queue.push(elem);
+    }
+    dequeue() {
+      return this._queue.shift(); //returns deleted element
+    }
+  }
 
 module.exports = Queue;
