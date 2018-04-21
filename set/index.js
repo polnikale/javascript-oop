@@ -41,14 +41,14 @@ union(set) {
     let neededSetValues = set.values;
     if (this.size >= neededSetValues.length) {
     newSet = new Set(...this.values);
-    neededSetValues.map((elem) => {
+    neededSetValues.forEach((elem) => {
         if (!this.has(elem)) {
         newSet.add(elem);
         }
     });
     } else {
     newSet = new Set(...neededSetValues);
-    this.values.map((elem) => {
+    this.values.forEach((elem) => {
         if (!neededSetValues.includes(elem)) {
         newSet.add(elem);
         }
@@ -61,13 +61,13 @@ intersection(set) {
     const newSet = new Set();
     const neededSetValues = set.values;
     if (this.size >= neededSetValues.length) {
-    neededSetValues.map((elem) => {
+    neededSetValues.forEach((elem) => {
         if (this.has(elem)) {
         newSet.add(elem);
         }
     });
     } else {
-    this.values.map((elem) => {
+    this.values.forEach((elem) => {
         if (neededSetValues.includes(elem)) {
         newSet.add(elem);
         }
@@ -79,7 +79,7 @@ intersection(set) {
 difference(set) {
     const newSet = new Set();
     const neededSetValues = set.values;
-    this.values.map((elem) => {
+    this.values.forEach((elem) => {
         if (!neededSetValues.includes(elem)) {
         newSet.add(elem);
         }
