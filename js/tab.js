@@ -5,7 +5,6 @@ export default class Tab {
    */
   constructor({element, onActivate = () => {}}) {
       this._elem = element;
-      this._elem.hash = element.getAttribute('href');
       this._active = false;
       this._callback = onActivate;
       this.init();
