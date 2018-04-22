@@ -36,7 +36,8 @@ export default class Tab {
    * @returns {string}
    */
   get id() { 
-    return this._elem.hash.substring(1);
+    let indexOfHash = this._elem.hash.indexOf('#');
+    return this._elem.hash.substring(indexOfHash+1);
   }
 
   /**
@@ -50,6 +51,7 @@ export default class Tab {
   }
   set isActive(makeTabActive) {
     this._elem.classList.toggle('active', makeTabActive);
+    console.log(this._elem.classList);
     this._active = this._elem.classList.contains('active');
   }
 
@@ -66,8 +68,7 @@ export default class Tab {
    * @param {Event} event 
    */
   handleClick(event) {
-    console.log(this._callback);
-    this._active = true;
+    this.isActive = true;
     this._callback(this);
   }
 }

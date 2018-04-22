@@ -62,7 +62,6 @@ export default class TabBar {
    * @param {Tab} activeTab 
    */
   handleActivate(neededTab) {
-    console.log(neededTab);
     this._tabs.forEach((elem) => {
       if (elem == neededTab) {
         this._activeTab = elem;
