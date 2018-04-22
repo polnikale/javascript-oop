@@ -5,6 +5,7 @@ export default class Tab {
    */
   constructor({element, onActivate = () => {}}) {
       this._elem = element;
+      this._elem.hash = element.getAttribute('href');
       this._active = false;
       this._callback = onActivate;
       this.init();
@@ -35,7 +36,7 @@ export default class Tab {
    * @returns {string}
    */
   get id() { 
-    return this._elem.getAttribute('href').substring(1);
+    return this._elem.hash.substring(1);
   }
 
   /**
@@ -65,6 +66,7 @@ export default class Tab {
    * @param {Event} event 
    */
   handleClick(event) {
+    console.log(this._callback);
     this._active = true;
     this._callback(this);
   }

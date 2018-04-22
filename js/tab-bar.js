@@ -4,10 +4,10 @@ export default class TabBar {
    * @param {{ element: HTMLElement, tabs: Tab[], onChange: Function }} args
    */
   constructor({element, tabs, onChange}) {
-    this._elem = element;
     this._tabs = tabs;
     this._activeTab = tabs[0];
     this._onChange = onChange;
+    this.init(element);
   }
 
   /**
@@ -15,9 +15,10 @@ export default class TabBar {
    * Устанавливает обработчик для обработки активации вкладки.
    * @private
    */
-  init() {
+  init(element) {
+    this._elem = element;
     this._tabs.forEach((elem) => {
-      elem.clickHandler = this.handleActivate;
+      elem.clickHandler = this.handleActivate.bind(this);
     })
   }
 
@@ -61,12 +62,14 @@ export default class TabBar {
    * @param {Tab} activeTab 
    */
   handleActivate(neededTab) {
+    console.log(neededTab);
     this._tabs.forEach((elem) => {
-      if (elem === neededTab) {
+      if (elem == neededTab) {
         this._activeTab = elem;
       } else {
         elem.isActive = false;
       }
     });
+    this._onChange(neededTab);
   }
 }
