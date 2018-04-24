@@ -1,0 +1,12 @@
+{
+  "name": "javascipt-oop",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "jest --verbose",
+    "test:watch": "jest --verbose --watch"
+  },
+  "dependencies": {
+    "jest": "^22.4.3"
+  }
+}
