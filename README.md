@@ -12,8 +12,32 @@ git checkout basics
 git checkout task1
 ```
 
+### Задание №1 (решение)
+
+```sh
+git checkout task1_solution
+```
+
 ## Инкапсуляция
 
 ```sh
 git checkout encapsulation
+```
+
+### Задание №2
+
+```sh
+git checkout task2
+```
+
+### Задание №2 (решение)
+
+```sh
+git checkout task2_solution
+```
+
+## Наследование
+
+```sh
+git checkout inheritance
 ```
