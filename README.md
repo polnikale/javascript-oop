@@ -41,3 +41,14 @@ git checkout task2_solution
 ```sh
 git checkout inheritance
 ```
+### Задание №3
+
+```sh
+git checkout task3
+```
+
+### Задание №3 (решение)
+
+```sh
+git checkout task2_solution
+```
