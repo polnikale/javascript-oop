@@ -5,7 +5,7 @@ class Input extends Element {
    * @param {{ tag: string, id: string, className: string, type: string, name: string, disabled: boolean, required: boolean }} args 
    */
   constructor({ type = 'text', name, value, disabled = false, required = false, ...args }) {
-    super({tag: 'input', ...args});
+    super(args);
     this.name = name;
     this._value = value;
     this.type = type;

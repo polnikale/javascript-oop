@@ -1,7 +1,7 @@
 const Input = require('../input');
 const Checkbox = require('./');
 
-xdescribe('Checkbox', () => {
+describe('Checkbox', () => {
     let checkbox;
 
     describe('Checkbox.constructor()', () => {
