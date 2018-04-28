@@ -4,7 +4,7 @@ describe.only('EventEmitter', () => {
     describe('EventEmitter.on()', () => {
         test('регистрирует обработчик на событие', () => {
             let eventEmitter = new EventEmitter({});
-            let listener = () => {};
+            let listener = () => {console.log(5)};
 
             eventEmitter.on('start', listener);
 
