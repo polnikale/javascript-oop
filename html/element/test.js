@@ -1,6 +1,6 @@
 const Element = require('./');
 
-describe.only('Element', () => {
+xdescribe.only('Element', () => {
     describe('Element.className', () => {
         test('возвращает строку с названием CSS классов', () => {
             let element = new Element({});
