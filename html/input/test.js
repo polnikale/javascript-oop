@@ -1,7 +1,7 @@
 const Element = require('../element');
 const Input = require('./');
 
-xdescribe.only('Input', () => {
+describe.only('Input', () => {
     let input;
 
     describe('Input.constructor()', () => {
