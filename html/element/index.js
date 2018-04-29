@@ -37,9 +37,9 @@ class Element extends EventEmitter {
    * @param {string} className 
    */
   removeClass(className) {
-    let index = this.className.indexOf(className);
+    let index = this._className.indexOf(className);
     if (index !== -1) {
-      this.className.splice(index, 1);
+      this._className.splice(index, 1);
     }
   }
 

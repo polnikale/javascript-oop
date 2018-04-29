@@ -2,7 +2,7 @@ const Input = require('../input');
 const TextInput = require('../text-input');
 const EmailInput = require('./');
 
-xdescribe.only('EmailInput', () => {
+describe.only('EmailInput', () => {
     let emailInput;
 
     describe('EmailInput.constructor()', () => {

@@ -5,7 +5,7 @@ class TextInput extends Input {
    * @param {{ tag: string, id: string, className: string, type: string, name: string, disabled: boolean, required: boolean, value: string, minlength: string, maxlength: string }} args 
    */
   constructor({ value = '', minlength, maxlength, ...args }) {
-    super();
+    super({value: value, ...args});
     this.minlength = minlength;
     this.maxlength = maxlength;
   }
@@ -19,7 +19,7 @@ class TextInput extends Input {
    */
   get isValid() {
     const valLength = this._value.length;
-    return valLength >= minLength && valLength <= maxLength;
+    return ((valLength >= this.minlength) && (valLength <= this.maxlength));
   }
 }
 

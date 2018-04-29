@@ -5,7 +5,7 @@ class Checkbox extends Input {
      * @param {{ tag: string, id: string, className: string, type: string, name: string, disabled: boolean, required: boolean, checked: boolean }} args 
      */
     constructor({ checked = false, ...args }) {
-      super({value: checked}, ...args);
+      super({value: checked, ...args});
       this._checked = checked;
     }
 
