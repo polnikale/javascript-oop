@@ -7,6 +7,8 @@ export default class Question {
   text: string;
   answers: string[];
   correctAnswer: number;
+
+  
   constructor(text: string, answers: string[], correctAnswer: number) {
     this.text = text;
     this.answers = answers;
