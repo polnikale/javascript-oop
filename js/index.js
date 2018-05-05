@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var app_1 = __importDefault(require("./app"));
-var quiz_1 = __importDefault(require("./quiz"));
-var question_1 = __importDefault(require("./question"));
+var quiz_1 = require("./quiz");
+var question_1 = require("./question");
 var questions = [
     {
         text: 'Какой способ создает объект?',
@@ -59,6 +59,6 @@ var questions = [
     }
 ];
 var root = document.querySelector('#app');
-var quiz = new quiz_1.default('JS Quiz', questions.map(function (q) { return new question_1.default(q.text, q.answers, q.correctAnswer); }));
+var quiz = new quiz_1.Quiz('JS Quiz', questions.map(function (q) { return new question_1.Question(q.text, q.answers, q.correctAnswer); }));
 var app = new app_1.default(root, quiz);
 app.displayNext();

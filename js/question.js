@@ -17,4 +17,4 @@ var Question = /** @class */ (function () {
     };
     return Question;
 }());
-exports.default = Question;
+exports.Question = Question;

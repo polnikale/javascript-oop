@@ -1,12 +1,19 @@
-export default class Quiz {
+import {IQuestion, Question} from './question';
+interface IQuiz {
+  title: string;
+  questions: IQuestion[];
+  readonly currentQuestion: IQuestion;
+}
+
+class Quiz implements IQuiz {
   /**
    * @param {string} title 
    * @param {Question[]} quiestions 
    */
   title: string;
-  questions: Question[];
+  questions: IQuestion[];
 
-  constructor(title: string, questions: Question[]) {
+  constructor(title: string, questions: IQuestion[]) {
     this.title = title;
     this.questions = questions;
   }
@@ -16,8 +23,10 @@ export default class Quiz {
    * 
    * @returns {Question}
    */
-  get currentQuestion(): Question {
-    return 
+  get currentQuestion(): IQuestion {
+    for (let question of this.questions) {
+      if (question.text === this.title) return question;
+    }
   }
 
   /**
@@ -25,15 +34,18 @@ export default class Quiz {
    * 
    * @returns {boolean}
    */
-  get hasEnded() {
-      
+  get hasEnded(): boolean {
+    return this.currentQuestion !== null;
   }
 
   /**
    * Проверяет правильность ответа выбранного пользователем.
    * @param {*} answer 
    */
-  checkAnswer(answer) {
-      
+  checkAnswer(answer: any): boolean {
+    const currQuest = this.currentQuestion;
+    return answer === currQuest.answers[currQuest.correctAnswer];
   }
 }
+
+export {IQuiz, Quiz};

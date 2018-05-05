@@ -12,7 +12,11 @@ var Quiz = /** @class */ (function () {
          * @returns {Question}
          */
         get: function () {
-            return;
+            for (var _i = 0, _a = this.questions; _i < _a.length; _i++) {
+                var question = _a[_i];
+                if (question.text === this.title)
+                    return question;
+            }
         },
         enumerable: true,
         configurable: true
@@ -24,6 +28,7 @@ var Quiz = /** @class */ (function () {
          * @returns {boolean}
          */
         get: function () {
+            return this.currentQuestion !== null;
         },
         enumerable: true,
         configurable: true
@@ -33,7 +38,9 @@ var Quiz = /** @class */ (function () {
      * @param {*} answer
      */
     Quiz.prototype.checkAnswer = function (answer) {
+        var currQuest = this.currentQuestion;
+        return answer === currQuest.answers[currQuest.correctAnswer];
     };
     return Quiz;
 }());
-exports.default = Quiz;
+exports.Quiz = Quiz;

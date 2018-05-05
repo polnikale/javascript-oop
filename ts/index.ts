@@ -1,6 +1,6 @@
 import App from './app';
-import Quiz from './quiz';
-import Question from './question';
+import {IQuiz, Quiz} from './quiz';
+import {IQuestion, Question} from './question';
 
 const questions = [
     {
