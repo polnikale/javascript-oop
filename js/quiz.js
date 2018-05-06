@@ -1,46 +1,38 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Quiz = /** @class */ (function () {
-    function Quiz(title, questions) {
+class Quiz {
+    constructor(title, questions) {
         this.title = title;
         this.questions = questions;
     }
-    Object.defineProperty(Quiz.prototype, "currentQuestion", {
-        /**
-         * Возвращает текущий вопрос.
-         *
-         * @returns {Question}
-         */
-        get: function () {
-            for (var _i = 0, _a = this.questions; _i < _a.length; _i++) {
-                var question = _a[_i];
-                if (question.text === this.title)
-                    return question;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Quiz.prototype, "hasEnded", {
-        /**
-         * Возвращает `true/false` в зависимости от того закончился тест или нет.
-         *
-         * @returns {boolean}
-         */
-        get: function () {
-            return this.currentQuestion !== null;
-        },
-        enumerable: true,
-        configurable: true
-    });
+    /**
+     * Возвращает текущий вопрос.
+     *
+     * @returns {Question}
+     */
+    get currentQuestion() {
+        for (let question of this.questions) {
+            if (question.text === this.title)
+                return question;
+        }
+        return undefined;
+    }
+    /**
+     * Возвращает `true/false` в зависимости от того закончился тест или нет.
+     *
+     * @returns {boolean}
+     */
+    get hasEnded() {
+        return this.currentQuestion !== null;
+    }
     /**
      * Проверяет правильность ответа выбранного пользователем.
      * @param {*} answer
      */
-    Quiz.prototype.checkAnswer = function (answer) {
-        var currQuest = this.currentQuestion;
-        return answer === currQuest.answers[currQuest.correctAnswer];
-    };
-    return Quiz;
-}());
-exports.Quiz = Quiz;
+    checkAnswer(answer) {
+        if (this.currentQuestion === undefined) {
+            return false;
+        }
+        const currQuest = this.currentQuestion;
+        return answer === currQuest.correctAnswer;
+    }
+}
+export { Quiz };

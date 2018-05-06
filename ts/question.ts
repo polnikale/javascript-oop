@@ -2,7 +2,7 @@ interface IQuestion {
   text: string;
   answers: string[];
   correctAnswer: number;
-  isCorrectAnswer (answer: number): boolean;
+  isCorrectAnswer?(answer: number): boolean;
 }
 
 class Question implements IQuestion {
@@ -33,4 +33,4 @@ class Question implements IQuestion {
   }
 }
 
-export {IQuestion, Question};
+export { IQuestion, Question };

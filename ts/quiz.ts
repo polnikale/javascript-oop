@@ -1,8 +1,8 @@
-import {IQuestion, Question} from './question';
+import { IQuestion, Question } from './question';
 interface IQuiz {
   title: string;
   questions: IQuestion[];
-  readonly currentQuestion: IQuestion;
+  readonly currentQuestion: IQuestion | undefined;
 }
 
 class Quiz implements IQuiz {
@@ -23,10 +23,11 @@ class Quiz implements IQuiz {
    * 
    * @returns {Question}
    */
-  get currentQuestion(): IQuestion {
+  get currentQuestion(): IQuestion | undefined {
     for (let question of this.questions) {
       if (question.text === this.title) return question;
     }
+    return undefined;
   }
 
   /**
@@ -42,10 +43,13 @@ class Quiz implements IQuiz {
    * Проверяет правильность ответа выбранного пользователем.
    * @param {*} answer 
    */
-  checkAnswer(answer: any): boolean {
-    const currQuest = this.currentQuestion;
-    return answer === currQuest.answers[currQuest.correctAnswer];
+  checkAnswer(answer: number): boolean {
+    if (this.currentQuestion === undefined) {
+      return false;
+    }
+    const currQuest: IQuestion = this.currentQuestion;
+    return answer === currQuest.correctAnswer;
   }
 }
 
-export {IQuiz, Quiz};
+export { IQuiz, Quiz };

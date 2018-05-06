@@ -1,12 +1,7 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var app_1 = __importDefault(require("./app"));
-var quiz_1 = require("./quiz");
-var question_1 = require("./question");
-var questions = [
+import App from './app.js';
+import { Quiz } from './quiz.js';
+import { Question } from './question.js';
+const questions = [
     {
         text: 'Какой способ создает объект?',
         answers: [
@@ -58,7 +53,7 @@ var questions = [
         correctAnswer: 3
     }
 ];
-var root = document.querySelector('#app');
-var quiz = new quiz_1.Quiz('JS Quiz', questions.map(function (q) { return new question_1.Question(q.text, q.answers, q.correctAnswer); }));
-var app = new app_1.default(root, quiz);
+const root = document.querySelector('#app');
+const quiz = new Quiz('JS Quiz', questions.map(q => new Question(q.text, q.answers, q.correctAnswer)));
+const app = new App(root, quiz);
 app.displayNext();
