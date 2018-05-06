@@ -1,5 +1,6 @@
 class Quiz {
     constructor(title, questions) {
+        this.index = -1;
         this.title = title;
         this.questions = questions;
     }
@@ -9,10 +10,8 @@ class Quiz {
      * @returns {Question}
      */
     get currentQuestion() {
-        for (let question of this.questions) {
-            if (question.text === this.title)
-                return question;
-        }
+        if (this.index < this.questions.length)
+            return this.questions[this.index];
         return undefined;
     }
     /**
@@ -28,10 +27,10 @@ class Quiz {
      * @param {*} answer
      */
     checkAnswer(answer) {
-        if (this.currentQuestion === undefined) {
+        const currQuest = this.currentQuestion;
+        if (currQuest === undefined) {
             return false;
         }
-        const currQuest = this.currentQuestion;
         return answer === currQuest.correctAnswer;
     }
 }

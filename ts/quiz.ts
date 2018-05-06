@@ -2,7 +2,10 @@ import { IQuestion, Question } from './question';
 interface IQuiz {
   title: string;
   questions: IQuestion[];
+  index: number;
   readonly currentQuestion: IQuestion | undefined;
+  readonly hasEnded: boolean;
+  checkAnswer: (answer: number) => boolean;
 }
 
 class Quiz implements IQuiz {
@@ -10,7 +13,8 @@ class Quiz implements IQuiz {
    * @param {string} title 
    * @param {Question[]} quiestions 
    */
-  title: string;
+  public title: string;
+  public index: number = -1;
   questions: IQuestion[];
 
   constructor(title: string, questions: IQuestion[]) {
@@ -24,9 +28,7 @@ class Quiz implements IQuiz {
    * @returns {Question}
    */
   get currentQuestion(): IQuestion | undefined {
-    for (let question of this.questions) {
-      if (question.text === this.title) return question;
-    }
+    if (this.index < this.questions.length) return this.questions[this.index];
     return undefined;
   }
 
@@ -43,11 +45,11 @@ class Quiz implements IQuiz {
    * Проверяет правильность ответа выбранного пользователем.
    * @param {*} answer 
    */
-  checkAnswer(answer: number): boolean {
-    if (this.currentQuestion === undefined) {
+  public checkAnswer(answer: number): boolean {
+    const currQuest: IQuestion | undefined = this.currentQuestion;
+    if (currQuest === undefined) {
       return false;
     }
-    const currQuest: IQuestion = this.currentQuestion;
     return answer === currQuest.correctAnswer;
   }
 }
