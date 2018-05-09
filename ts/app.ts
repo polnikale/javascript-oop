@@ -67,7 +67,7 @@ export default class App implements IApp {
       answerElem: document.getElementById('answers'),
       progressElem: document.getElementById('progress'),
       scoreElem: document.getElementById('score'),
-      inputElem: document.getElementById('input'),
+      inputElem: document.getElementsByTagName('input')[0], //ругался, если я задаю getElementById, ибо он возвращает на инпуетелемент
       confirmBtnElem: document.getElementById('btn-answer'),
     };
 

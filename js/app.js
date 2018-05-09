@@ -21,7 +21,7 @@ export default class App {
             answerElem: document.getElementById('answers'),
             progressElem: document.getElementById('progress'),
             scoreElem: document.getElementById('score'),
-            inputElem: document.getElementById('input'),
+            inputElem: document.getElementsByTagName('input')[0],
             confirmBtnElem: document.getElementById('btn-answer'),
         };
         if (!this.elems.headerElem || !this.elems.answerElem) {
