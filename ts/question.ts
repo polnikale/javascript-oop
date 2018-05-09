@@ -102,7 +102,6 @@ const withMultipleBehavior = {
     app.elems.questionElem.textContent = '';
     app.elems.answerElem.innerHTML = '';
     app.elems.confirmBtnElem.classList.add('none');
-    console.log(app.quiz.currentQuestion);
   }
 };
 
@@ -118,20 +117,17 @@ const withOpenBehavior = {
     return question.correctAnswer === index;
   },
   displayAnswers(app: IApp): void { 
-    const question = app.quiz.currentQuestion;
-    const answerElem = app.elems.answerElem;
-    if (!question || !answerElem) return;
-
-    question.answers.forEach((answer: string, index: number) => {
-      let li = document.createElement('li');
-      li.className = 'list-group-item list-group-item-action';
-      li.id = index.toString();
-      li.innerHTML = answer;
-      answerElem.appendChild(li);
-    });
-    const quiz = app.element.querySelector('#quiz');
-    if (!app.elems.confirmBtnElem) throw new Error('something went wrong');
+    if (!app.elems.confirmBtnElem || !app.elems.inputElem) throw new Error('something went wrong');
     app.elems.confirmBtnElem.classList.remove('none');
+    app.elems.inputElem.classList.remove('none');
+  },
+  clearAll(app: IApp): void {
+    if (!app.elems.progressElem || !app.elems.questionElem || !app.elems.confirmBtnElem || !app.elems.inputElem) return;
+    app.elems.progressElem.textContent = '';
+    app.elems.questionElem.textContent = '';
+    app.elems.inputElem.value = '';
+    app.elems.confirmBtnElem.classList.add('none');
+    app.elems.inputElem.classList.add('none');
   },
 };
 
