@@ -10,13 +10,13 @@ const withSingleBehavior = {
             app.rightAnswers += 1;
     },
     checkAnswer(question, index) {
+        return question.correctAnswer === index;
     },
     displayAnswers(app) {
         const question = app.quiz.currentQuestion;
         const answerElem = app.elems.answerElem;
         if (!question || !answerElem)
             return;
-        answerElem.innerHTML = '';
         question.answers.forEach((answer, index) => {
             let li = document.createElement('li');
             li.className = 'list-group-item list-group-item-action';
@@ -24,6 +24,14 @@ const withSingleBehavior = {
             li.innerHTML = answer;
             answerElem.appendChild(li);
         });
+    },
+    clearAll(app) {
+        if (!app.elems.answerElem || !app.elems.progressElem || !app.elems.questionElem)
+            return;
+        app.elems.progressElem.textContent = '';
+        app.elems.questionElem.textContent = '';
+        app.elems.answerElem.innerHTML = '';
+        console.log('lol');
     }
 };
 const withMultipleBehavior = {
@@ -67,7 +75,6 @@ const withMultipleBehavior = {
         const answerElem = app.elems.answerElem;
         if (!question || !answerElem)
             return;
-        answerElem.innerHTML = '';
         question.answers.forEach((answer, index) => {
             let li = document.createElement('li');
             li.className = 'list-group-item list-group-item-action';
@@ -76,12 +83,52 @@ const withMultipleBehavior = {
             answerElem.appendChild(li);
         });
         const quiz = app.element.querySelector('#quiz');
-        if (!quiz)
+        if (!app.elems.confirmBtnElem)
             throw new Error('something went wrong');
-        quiz.insertBefore(app.elems.confirmBtnElem, app.elems.progressElem);
+        app.elems.confirmBtnElem.classList.remove('none');
+    },
+    clearAll(app) {
+        if (!app.elems.answerElem || !app.elems.progressElem || !app.elems.questionElem || !app.elems.confirmBtnElem)
+            return;
+        app.elems.progressElem.textContent = '';
+        app.elems.questionElem.textContent = '';
+        app.elems.answerElem.innerHTML = '';
+        app.elems.confirmBtnElem.classList.add('none');
+        console.log(app.quiz.currentQuestion);
     }
 };
-const withOpenBehavior = {};
+const withOpenBehavior = {
+    handleAnswerClick(app, target) {
+        if (!app.elems.inputElem)
+            return;
+        let answ = app.elems.inputElem.value;
+        let quest = app.quiz.currentQuestion;
+        if (!quest)
+            throw new Error('something went wrong!');
+        if (this.checkAnswer(quest, answ))
+            app.rightAnswers += 1;
+    },
+    checkAnswer(question, index) {
+        return question.correctAnswer === index;
+    },
+    displayAnswers(app) {
+        const question = app.quiz.currentQuestion;
+        const answerElem = app.elems.answerElem;
+        if (!question || !answerElem)
+            return;
+        question.answers.forEach((answer, index) => {
+            let li = document.createElement('li');
+            li.className = 'list-group-item list-group-item-action';
+            li.id = index.toString();
+            li.innerHTML = answer;
+            answerElem.appendChild(li);
+        });
+        const quiz = app.element.querySelector('#quiz');
+        if (!app.elems.confirmBtnElem)
+            throw new Error('something went wrong');
+        app.elems.confirmBtnElem.classList.remove('none');
+    },
+};
 class Question {
     constructor(text, type, answers = [], correctAnswer) {
         this.text = text;

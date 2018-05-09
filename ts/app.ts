@@ -7,13 +7,13 @@ import { IQuiz, Quiz } from './quiz';
 interface IApp {
   element: Element;
   elems: {
-    headerElem?: Element | null;
-    questionElem: Element | null;
-    answerElem: Element | null;
-    progressElem: Element | null;
-    scoreElem: Element | null;
-    inputElem: Element;
-    confirmBtnElem: Element;
+    headerElem?: HTMLElement | null;
+    questionElem: HTMLElement | null;
+    answerElem: HTMLElement | null;
+    progressElem: HTMLElement | null;
+    scoreElem: HTMLElement | null;
+    inputElem: HTMLInputElement | null;
+    confirmBtnElem: HTMLElement | null;
   }
   chosenIndexes: number[];
   questionNumber: number;
@@ -23,20 +23,20 @@ interface IApp {
 }
 
 
-export default class App {
+export default class App implements IApp {
   /**
    * @param {HTMLElement} element 
    * @param {Quiz} quiz 
    */
   public element: Element;
   public elems!: {
-    headerElem?: Element | null;
-    questionElem: Element | null;
-    answerElem: Element | null;
-    progressElem: Element | null;
-    scoreElem: Element | null;
-    inputElem: Element;
-    confirmBtnElem: Element;
+    headerElem?: HTMLElement | null;
+    questionElem: HTMLElement | null;
+    answerElem: HTMLElement | null;
+    progressElem: HTMLElement | null;
+    scoreElem: HTMLElement | null;
+    inputElem: HTMLInputElement | null;
+    confirmBtnElem: HTMLElement | null;
   }
   chosenIndexes!: number[];
   public questionNumber: number = -1;
@@ -62,27 +62,24 @@ export default class App {
    */
   private init() {
     this.elems = {
-      headerElem: this.element.querySelector('h1'),
+      headerElem: document.getElementById('title'),
       questionElem: document.getElementById('question'),
       answerElem: document.getElementById('answers'),
       progressElem: document.getElementById('progress'),
       scoreElem: document.getElementById('score'),
-      inputElem: document.createElement('input'),
-      confirmBtnElem: document.createElement('button'),
+      inputElem: document.getElementById('input'),
+      confirmBtnElem: document.getElementById('btn-answer'),
     };
-    this.elems.confirmBtnElem.className = 'btn-success';
-    this.elems.inputElem.setAttribute('type', 'text');
-    this.elems.inputElem.className = 'form-control';
-    this.elems.confirmBtnElem.textContent = 'Дальше!';
-
-    this.chosenIndexes = [];
-    
-
 
     if (!this.elems.headerElem || !this.elems.answerElem) {
       throw new ReferenceError('Something is null!');
     } 
+
     this.elems.headerElem.textContent = this.quiz.title;
+
+    this.chosenIndexes = [];
+  
+
 
     /**@codedojo возник вопрос. Очевидно, тут некоторые элементы могут быть null/undefined. Я в init сделал проверку на то, что они не falsy. 
      * Но тайпскрипт не понял, что они дальше уже буду не null(именно в функциях) и надо выполпять дополнительную проверку(пример тот же displayQuestion). Это я где-то налажал, или как?
@@ -110,7 +107,6 @@ export default class App {
   private handleChooseAnswer(event: any): void {
     const question = this.quiz.currentQuestion;
     if (!question) return;
-    console.log(question);
     if(!question.handleChooseClick) {
       throw new Error('Something went wrong');
     }
@@ -118,7 +114,7 @@ export default class App {
   }
 
   protected restartListeners(): void {
-    if (!this.elems.answerElem) {
+    if (!this.elems.answerElem || !this.elems.confirmBtnElem) {
       throw new Error('Something went wrong');
     }
     this.elems.answerElem.removeEventListener('click', this.handleAnswerButtonClick);
@@ -142,9 +138,9 @@ export default class App {
    * Отображает следующий вопрос или отображает результат если тест заверешен.
    */
   public displayNext(): void {
-    this.quiz.index += 1;
     if (!this.elems.answerElem || !this.elems.progressElem || !this.elems.questionElem) return;
     this.clearAll();
+    this.quiz.index += 1;
     this.restartListeners();
 
     if (this.questionNumber <= this.maxQuestionNumber) {
@@ -157,10 +153,12 @@ export default class App {
   }
 
   public clearAll() {// отличается(нужно добавлять/скрывать инпут/кнопку дальше)
-    if (!this.elems.answerElem || !this.elems.progressElem || !this.elems.questionElem) return;
-    this.elems.progressElem.textContent = '';
-    this.elems.questionElem.textContent = '';
-    this.elems.answerElem.innerHTML = '';
+    const question = this.quiz.currentQuestion;
+    if (!question) return;
+    if(!question.clearAll) {
+      throw new Error('Something went wrong');
+    }
+    question.clearAll(this);
   }
 
   /**
@@ -194,7 +192,7 @@ export default class App {
    */
   public displayProgress(): void {// остается таким же
     if (!this.elems.progressElem) return;
-    this.elems.progressElem.textContent = `Question ${this.questionNumber+1} of ${this.maxQuestionNumber+1}`;
+    this.elems.progressElem.textContent = `Question ${this.questionNumber+1} of ${this.maxQuestionNumber+1}...${this.rightAnswers}`;
   }
 
   /**

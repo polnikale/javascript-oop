@@ -16,23 +16,19 @@ export default class App {
      */
     init() {
         this.elems = {
-            headerElem: this.element.querySelector('h1'),
+            headerElem: document.getElementById('title'),
             questionElem: document.getElementById('question'),
             answerElem: document.getElementById('answers'),
             progressElem: document.getElementById('progress'),
             scoreElem: document.getElementById('score'),
-            inputElem: document.createElement('input'),
-            confirmBtnElem: document.createElement('button'),
+            inputElem: document.getElementById('input'),
+            confirmBtnElem: document.getElementById('btn-answer'),
         };
-        this.elems.confirmBtnElem.className = 'btn-success';
-        this.elems.inputElem.setAttribute('type', 'text');
-        this.elems.inputElem.className = 'form-control';
-        this.elems.confirmBtnElem.textContent = 'Дальше!';
-        this.chosenIndexes = [];
         if (!this.elems.headerElem || !this.elems.answerElem) {
             throw new ReferenceError('Something is null!');
         }
         this.elems.headerElem.textContent = this.quiz.title;
+        this.chosenIndexes = [];
         /**@codedojo возник вопрос. Очевидно, тут некоторые элементы могут быть null/undefined. Я в init сделал проверку на то, что они не falsy.
          * Но тайпскрипт не понял, что они дальше уже буду не null(именно в функциях) и надо выполпять дополнительную проверку(пример тот же displayQuestion). Это я где-то налажал, или как?
          * UPD: узнал о !, но элемент же может быть null, если его нет. Но при этом постоянные проверки выбешивают...
@@ -60,14 +56,13 @@ export default class App {
         const question = this.quiz.currentQuestion;
         if (!question)
             return;
-        console.log(question);
         if (!question.handleChooseClick) {
             throw new Error('Something went wrong');
         }
         question.handleChooseClick(this, event.target);
     }
     restartListeners() {
-        if (!this.elems.answerElem) {
+        if (!this.elems.answerElem || !this.elems.confirmBtnElem) {
             throw new Error('Something went wrong');
         }
         this.elems.answerElem.removeEventListener('click', this.handleAnswerButtonClick);
@@ -92,10 +87,10 @@ export default class App {
      * Отображает следующий вопрос или отображает результат если тест заверешен.
      */
     displayNext() {
-        this.quiz.index += 1;
         if (!this.elems.answerElem || !this.elems.progressElem || !this.elems.questionElem)
             return;
         this.clearAll();
+        this.quiz.index += 1;
         this.restartListeners();
         if (this.questionNumber <= this.maxQuestionNumber) {
             this.questionNumber += 1;
@@ -107,11 +102,13 @@ export default class App {
         }
     }
     clearAll() {
-        if (!this.elems.answerElem || !this.elems.progressElem || !this.elems.questionElem)
+        const question = this.quiz.currentQuestion;
+        if (!question)
             return;
-        this.elems.progressElem.textContent = '';
-        this.elems.questionElem.textContent = '';
-        this.elems.answerElem.innerHTML = '';
+        if (!question.clearAll) {
+            throw new Error('Something went wrong');
+        }
+        question.clearAll(this);
     }
     /**
      * Отображает вопрос.
@@ -144,7 +141,7 @@ export default class App {
     displayProgress() {
         if (!this.elems.progressElem)
             return;
-        this.elems.progressElem.textContent = `Question ${this.questionNumber + 1} of ${this.maxQuestionNumber + 1}`;
+        this.elems.progressElem.textContent = `Question ${this.questionNumber + 1} of ${this.maxQuestionNumber + 1}...${this.rightAnswers}`;
     }
     /**
      * Отображает результат теста.

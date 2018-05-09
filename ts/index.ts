@@ -1,6 +1,7 @@
 import App from './app.js';
 import { Quiz } from './quiz.js';
 import { Question, TAnswer, withSingleBehavior, withMultipleBehavior, withOpenBehavior } from './question.js';
+import { typesOfBehavior } from './different.js';
 const questions = [
   {
     type: 'multiple',
@@ -72,15 +73,12 @@ const quiz = new Quiz('JS Quiz', questions.map(q => {
       throw new Error('No answers, brah');
     }
   }
-  if (q.type === 'single') {
-    return Object.assign(new Question(q.text, q.type, q.answers, answer), withSingleBehavior);
-  } else if (q.type === 'multiple') {
-    return Object.assign(new Question(q.text, q.type, q.answers, answer), withMultipleBehavior);
-  } else if (q.type === 'open') {
-    return Object.assign(new Question(q.text, q.type, q.answers, answer), withOpenBehavior);
-  } else {
-    return new Question(q.text, q.type, q.answers, answer);
+  for (let typeOfBehavior of typesOfBehavior) {
+    if (typeOfBehavior.type === q.type) {
+      return Object.assign(new Question(q.text, q.type, q.answers, answer), typeOfBehavior.behavior);
+    }
   }
+  return new Question(q.text, q.type, q.answers, answer);
 }));
 const app = new App(root, quiz);
 app.displayNext();

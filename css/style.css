@@ -11,8 +11,12 @@ body {
     cursor: pointer;
 }
 
-.btn-success {
+.btn-primary {
     width: 100px;
     margin: 10px auto;
     border-radius: 5px;
+}
+
+.none {
+    display: none;
 }

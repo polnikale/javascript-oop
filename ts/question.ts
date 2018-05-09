@@ -7,10 +7,11 @@ interface IQuestion {
   type: string;
   answers: string[];
   correctAnswer: TAnswer;
-  isCorrectAnswer?(answer: number): boolean;
+  isCorrectAnswer?(answer: number | string): boolean;
   handleAnswerClick?(app: IApp, target: Element): void;
   handleChooseClick?(app: IApp, target: Element): void;
   displayAnswers?(app: IApp): void;
+  clearAll?(app: IApp): void;
 }
 
 const withSingleBehavior =  { // Скорее всего, в дочернем элементе изменять действие внешнего элемента - плохая практика, но я ничего лушче пока придумать не могу
@@ -22,13 +23,12 @@ const withSingleBehavior =  { // Скорее всего, в дочернем э
     if (this.checkAnswer(quest, answIndex)) app.rightAnswers += 1;
   },
   checkAnswer(question: IQuestion, index: number) {
-
+    return question.correctAnswer === index;
   },
   displayAnswers(app: IApp): void { 
     const question = app.quiz.currentQuestion;
     const answerElem = app.elems.answerElem;
     if (!question || !answerElem) return;
-    answerElem.innerHTML = '';
 
     question.answers.forEach((answer: string, index: number) => {
       let li = document.createElement('li');
@@ -37,6 +37,13 @@ const withSingleBehavior =  { // Скорее всего, в дочернем э
       li.innerHTML = answer;
       answerElem.appendChild(li);
     });
+  },
+  clearAll(app: IApp): void {
+    if (!app.elems.answerElem || !app.elems.progressElem || !app.elems.questionElem) return;
+    app.elems.progressElem.textContent = '';
+    app.elems.questionElem.textContent = '';
+    app.elems.answerElem.innerHTML = '';
+    console.log('lol');
   }
 };
 
@@ -77,7 +84,6 @@ const withMultipleBehavior = {
     const question = app.quiz.currentQuestion;
     const answerElem = app.elems.answerElem;
     if (!question || !answerElem) return;
-    answerElem.innerHTML = '';
 
     question.answers.forEach((answer: string, index: number) => {
       let li = document.createElement('li');
@@ -87,13 +93,46 @@ const withMultipleBehavior = {
       answerElem.appendChild(li);
     });
     const quiz = app.element.querySelector('#quiz');
-    if (!quiz) throw new Error('something went wrong');
-    quiz.insertBefore(app.elems.confirmBtnElem, app.elems.progressElem);
+    if (!app.elems.confirmBtnElem) throw new Error('something went wrong');
+    app.elems.confirmBtnElem.classList.remove('none');
+  },
+  clearAll(app: IApp): void {
+    if (!app.elems.answerElem || !app.elems.progressElem || !app.elems.questionElem || !app.elems.confirmBtnElem) return;
+    app.elems.progressElem.textContent = '';
+    app.elems.questionElem.textContent = '';
+    app.elems.answerElem.innerHTML = '';
+    app.elems.confirmBtnElem.classList.add('none');
+    console.log(app.quiz.currentQuestion);
   }
 };
 
 const withOpenBehavior = {
-  
+  handleAnswerClick(app: IApp, target: Element): void {
+    if (!app.elems.inputElem) return; 
+    let answ = app.elems.inputElem.value;
+    let quest = app.quiz.currentQuestion;
+    if (!quest) throw new Error('something went wrong!');
+    if (this.checkAnswer(quest, answ)) app.rightAnswers += 1;
+  },
+  checkAnswer(question: IQuestion, index: string) {
+    return question.correctAnswer === index;
+  },
+  displayAnswers(app: IApp): void { 
+    const question = app.quiz.currentQuestion;
+    const answerElem = app.elems.answerElem;
+    if (!question || !answerElem) return;
+
+    question.answers.forEach((answer: string, index: number) => {
+      let li = document.createElement('li');
+      li.className = 'list-group-item list-group-item-action';
+      li.id = index.toString();
+      li.innerHTML = answer;
+      answerElem.appendChild(li);
+    });
+    const quiz = app.element.querySelector('#quiz');
+    if (!app.elems.confirmBtnElem) throw new Error('something went wrong');
+    app.elems.confirmBtnElem.classList.remove('none');
+  },
 };
 
 class Question implements IQuestion {
