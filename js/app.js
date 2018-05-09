@@ -94,7 +94,7 @@ export default class App {
         this.clearAll();
         this.quiz.index += 1;
         this.restartListeners();
-        if (this.questionNumber < this.maxQuestionNumber) {
+        if (this.questionNumber <= this.maxQuestionNumber) {
             this.questionNumber += 1;
             this.render();
         }
@@ -139,7 +139,7 @@ export default class App {
     displayProgress() {
         if (!this.elems.progressElem)
             return;
-        this.elems.progressElem.textContent = `Question ${this.questionNumber + 1} of ${this.maxQuestionNumber + 1}`;
+        this.elems.progressElem.textContent = `Question ${this.questionNumber + 1} of ${this.maxQuestionNumber + 1}...${this.rightAnswers}`;
     }
     /**
      * Отображает результат теста.

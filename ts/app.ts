@@ -4,6 +4,7 @@ import { IQuiz, Quiz } from './quiz';
 
 //@codedojo меня очень сильно напрягают постоянные проверки на null/undefined у элементов, которые берутся из DOM. Можно ли этого как-то избежать? Или я как-то накосячил?
 
+//@codedojo наверное displaySomething/EventHandler можно было-бы как-то вынести и преборазовать, но я не понимаю как.
 interface IApp {
   element: Element;
   elems: {
@@ -124,7 +125,7 @@ export default class App implements IApp {
     const currentQuest = this.quiz.currentQuestion;
     if (!currentQuest) {
       this.displayScore();
-    }else {
+    } else {
       if (currentQuest.type === 'single') {
         this.elems.answerElem.addEventListener('click', this.handleAnswerButtonClick);
       } else if (currentQuest.type === 'multiple') {
