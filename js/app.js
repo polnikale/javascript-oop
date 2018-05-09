@@ -69,18 +69,20 @@ export default class App {
         this.elems.answerElem.removeEventListener('click', this.handleChooseAnswer);
         this.elems.confirmBtnElem.removeEventListener('click', this.handleAnswerButtonClick);
         const currentQuest = this.quiz.currentQuestion;
-        console.log(currentQuest);
-        if (!currentQuest)
-            throw new Error('something went wrong');
-        if (currentQuest.type === 'single') {
-            this.elems.answerElem.addEventListener('click', this.handleAnswerButtonClick);
+        if (!currentQuest) {
+            this.displayScore();
         }
-        else if (currentQuest.type === 'multiple') {
-            this.elems.answerElem.addEventListener('click', this.handleChooseAnswer);
-            this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
-        }
-        else if (currentQuest.type === 'open') {
-            this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
+        else {
+            if (currentQuest.type === 'single') {
+                this.elems.answerElem.addEventListener('click', this.handleAnswerButtonClick);
+            }
+            else if (currentQuest.type === 'multiple') {
+                this.elems.answerElem.addEventListener('click', this.handleChooseAnswer);
+                this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
+            }
+            else if (currentQuest.type === 'open') {
+                this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
+            }
         }
     }
     /**
@@ -92,13 +94,9 @@ export default class App {
         this.clearAll();
         this.quiz.index += 1;
         this.restartListeners();
-        if (this.questionNumber <= this.maxQuestionNumber) {
+        if (this.questionNumber < this.maxQuestionNumber) {
             this.questionNumber += 1;
             this.render();
-        }
-        else {
-            this.displayScore();
-            this.elems.answerElem.removeEventListener('click', this.handleAnswerButtonClick);
         }
     }
     clearAll() {
@@ -141,7 +139,7 @@ export default class App {
     displayProgress() {
         if (!this.elems.progressElem)
             return;
-        this.elems.progressElem.textContent = `Question ${this.questionNumber + 1} of ${this.maxQuestionNumber + 1}...${this.rightAnswers}`;
+        this.elems.progressElem.textContent = `Question ${this.questionNumber + 1} of ${this.maxQuestionNumber + 1}`;
     }
     /**
      * Отображает результат теста.

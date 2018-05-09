@@ -122,15 +122,17 @@ export default class App implements IApp {
     this.elems.confirmBtnElem.removeEventListener('click', this.handleAnswerButtonClick);
 
     const currentQuest = this.quiz.currentQuestion;
-    console.log(currentQuest);
-    if (!currentQuest) throw new Error('something went wrong');
-    if (currentQuest.type === 'single') {
-      this.elems.answerElem.addEventListener('click', this.handleAnswerButtonClick);
-    } else if (currentQuest.type === 'multiple') {
-      this.elems.answerElem.addEventListener('click', this.handleChooseAnswer);
-      this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
-    } else if (currentQuest.type === 'open') {
-      this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
+    if (!currentQuest) {
+      this.displayScore();
+    }else {
+      if (currentQuest.type === 'single') {
+        this.elems.answerElem.addEventListener('click', this.handleAnswerButtonClick);
+      } else if (currentQuest.type === 'multiple') {
+        this.elems.answerElem.addEventListener('click', this.handleChooseAnswer);
+        this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
+      } else if (currentQuest.type === 'open') {
+        this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
+      }
     }
   }
 
@@ -146,9 +148,6 @@ export default class App implements IApp {
     if (this.questionNumber <= this.maxQuestionNumber) {
       this.questionNumber += 1;
       this.render();
-    } else {
-      this.displayScore();
-      this.elems.answerElem.removeEventListener('click', this.handleAnswerButtonClick);
     }
   }
 
