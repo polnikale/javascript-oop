@@ -1,11 +1,10 @@
-import { IQuestion, Question } from './question';
+import { IQuestion, Question, TAnswer } from './question';
 interface IQuiz {
   title: string;
   questions: IQuestion[];
   index: number;
   readonly currentQuestion: IQuestion | undefined;
   readonly hasEnded: boolean;
-  checkAnswer: (answer: number) => boolean;
 }
 
 class Quiz implements IQuiz {
@@ -40,18 +39,7 @@ class Quiz implements IQuiz {
   get hasEnded(): boolean {
     return this.currentQuestion !== null;
   }
-
-  /**
-   * Проверяет правильность ответа выбранного пользователем.
-   * @param {*} answer 
-   */
-  public checkAnswer(answer: number): boolean {
-    const currQuest: IQuestion | undefined = this.currentQuestion;
-    if (currQuest === undefined) {
-      return false;
-    }
-    return answer === currQuest.correctAnswer;
-  }
+  //@codedojo checkAnswer убрал, переложил это на композиционные методы
 }
 
 export { IQuiz, Quiz };

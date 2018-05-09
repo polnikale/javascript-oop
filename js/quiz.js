@@ -22,16 +22,5 @@ class Quiz {
     get hasEnded() {
         return this.currentQuestion !== null;
     }
-    /**
-     * Проверяет правильность ответа выбранного пользователем.
-     * @param {*} answer
-     */
-    checkAnswer(answer) {
-        const currQuest = this.currentQuestion;
-        if (currQuest === undefined) {
-            return false;
-        }
-        return answer === currQuest.correctAnswer;
-    }
 }
 export { Quiz };

@@ -2,6 +2,8 @@ import { IQuestion, Question } from './question';
 import { IQuiz, Quiz } from './quiz';
 //@codedojo хотел транпайлить в es5, но мне почему-то ни common, ни system не поддались для экспорта/импорта, поэтому решил через esnext
 
+//@codedojo меня очень сильно напрягают постоянные проверки на null/undefined у элементов, которые берутся из DOM. Можно ли этого как-то избежать? Или я как-то накосячил?
+
 interface IApp {
   element: Element;
   elems: {
@@ -13,6 +15,7 @@ interface IApp {
     inputElem: Element;
     confirmBtnElem: Element;
   }
+  chosenIndexes: number[];
   questionNumber: number;
   rightAnswers: number;
   maxQuestionNumber: number;
@@ -35,7 +38,8 @@ export default class App {
     inputElem: Element;
     confirmBtnElem: Element;
   }
-  public questionNumber: number = 0;
+  chosenIndexes!: number[];
+  public questionNumber: number = -1;
   public rightAnswers: number = 0;
   public maxQuestionNumber: number;
   public quiz: IQuiz;
@@ -47,6 +51,7 @@ export default class App {
     this.quiz = quiz;
     this.maxQuestionNumber = quiz.questions.length-1;
     this.handleAnswerButtonClick = this.handleAnswerButtonClick.bind(this);
+    this.handleChooseAnswer = this.handleChooseAnswer.bind(this);
     this.init();
   }
 
@@ -68,11 +73,17 @@ export default class App {
     this.elems.confirmBtnElem.className = 'btn-success';
     this.elems.inputElem.setAttribute('type', 'text');
     this.elems.inputElem.className = 'form-control';
+    this.elems.confirmBtnElem.textContent = 'Дальше!';
+
+    this.chosenIndexes = [];
+    
+
+
     if (!this.elems.headerElem || !this.elems.answerElem) {
       throw new ReferenceError('Something is null!');
     } 
     this.elems.headerElem.textContent = this.quiz.title;
-    this.elems.answerElem.addEventListener('click', this.handleAnswerButtonClick);
+
     /**@codedojo возник вопрос. Очевидно, тут некоторые элементы могут быть null/undefined. Я в init сделал проверку на то, что они не falsy. 
      * Но тайпскрипт не понял, что они дальше уже буду не null(именно в функциях) и надо выполпять дополнительную проверку(пример тот же displayQuestion). Это я где-то налажал, или как?
      * UPD: узнал о !, но элемент же может быть null, если его нет. Но при этом постоянные проверки выбешивают...
@@ -90,18 +101,53 @@ export default class App {
     // if (this.quiz.checkAnswer(answIndex)) this.rightAnswers += 1;
     const question = this.quiz.currentQuestion;
     if (!question) return;
+    if (!question.handleAnswerClick) {
+      throw new Error('Something went wrong');
+    }
     question.handleAnswerClick(this, event.target);
     this.displayNext();
+  }
+  private handleChooseAnswer(event: any): void {
+    const question = this.quiz.currentQuestion;
+    if (!question) return;
+    console.log(question);
+    if(!question.handleChooseClick) {
+      throw new Error('Something went wrong');
+    }
+    question.handleChooseClick(this, event.target);
+  }
+
+  protected restartListeners(): void {
+    if (!this.elems.answerElem) {
+      throw new Error('Something went wrong');
+    }
+    this.elems.answerElem.removeEventListener('click', this.handleAnswerButtonClick);
+    this.elems.answerElem.removeEventListener('click', this.handleChooseAnswer);
+    this.elems.confirmBtnElem.removeEventListener('click', this.handleAnswerButtonClick);
+
+    const currentQuest = this.quiz.currentQuestion;
+    console.log(currentQuest);
+    if (!currentQuest) throw new Error('something went wrong');
+    if (currentQuest.type === 'single') {
+      this.elems.answerElem.addEventListener('click', this.handleAnswerButtonClick);
+    } else if (currentQuest.type === 'multiple') {
+      this.elems.answerElem.addEventListener('click', this.handleChooseAnswer);
+      this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
+    } else if (currentQuest.type === 'open') {
+      this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
+    }
   }
 
   /**
    * Отображает следующий вопрос или отображает результат если тест заверешен.
    */
   public displayNext(): void {
+    this.quiz.index += 1;
     if (!this.elems.answerElem || !this.elems.progressElem || !this.elems.questionElem) return;
     this.clearAll();
+    this.restartListeners();
+
     if (this.questionNumber <= this.maxQuestionNumber) {
-      this.quiz.index += 1;
       this.questionNumber += 1;
       this.render();
     } else {
@@ -138,17 +184,9 @@ export default class App {
    */
   public displayAnswers(): void { // отличается в зависимости от question.answers
     const question = this.quiz.currentQuestion;
-    const answerElem = this.elems.answerElem;
-    if (!question || !answerElem) return;
-    answerElem.innerHTML = '';
-
-    question.answers.forEach((answer: string, index: number) => {
-      let li = document.createElement('li');
-      li.className = 'list-group-item list-group-item-action';
-      li.id = index.toString();
-      li.innerHTML = answer;
-      answerElem.appendChild(li);
-    });
+    if (!question) throw new Error('something went wrong');
+    if (!question.displayAnswers) throw new Error('something went wrong');
+    question.displayAnswers(this);
   }
 
   /**
@@ -156,7 +194,7 @@ export default class App {
    */
   public displayProgress(): void {// остается таким же
     if (!this.elems.progressElem) return;
-    this.elems.progressElem.textContent = `Question ${this.questionNumber} of ${this.maxQuestionNumber+1}`;
+    this.elems.progressElem.textContent = `Question ${this.questionNumber+1} of ${this.maxQuestionNumber+1}`;
   }
 
   /**

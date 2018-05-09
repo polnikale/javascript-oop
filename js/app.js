@@ -1,11 +1,12 @@
 export default class App {
     constructor(element, quiz) {
-        this.questionNumber = 0;
+        this.questionNumber = -1;
         this.rightAnswers = 0;
         this.element = element;
         this.quiz = quiz;
         this.maxQuestionNumber = quiz.questions.length - 1;
         this.handleAnswerButtonClick = this.handleAnswerButtonClick.bind(this);
+        this.handleChooseAnswer = this.handleChooseAnswer.bind(this);
         this.init();
     }
     /**
@@ -26,11 +27,12 @@ export default class App {
         this.elems.confirmBtnElem.className = 'btn-success';
         this.elems.inputElem.setAttribute('type', 'text');
         this.elems.inputElem.className = 'form-control';
+        this.elems.confirmBtnElem.textContent = 'Дальше!';
+        this.chosenIndexes = [];
         if (!this.elems.headerElem || !this.elems.answerElem) {
             throw new ReferenceError('Something is null!');
         }
         this.elems.headerElem.textContent = this.quiz.title;
-        this.elems.answerElem.addEventListener('click', this.handleAnswerButtonClick);
         /**@codedojo возник вопрос. Очевидно, тут некоторые элементы могут быть null/undefined. Я в init сделал проверку на то, что они не falsy.
          * Но тайпскрипт не понял, что они дальше уже буду не null(именно в функциях) и надо выполпять дополнительную проверку(пример тот же displayQuestion). Это я где-то налажал, или как?
          * UPD: узнал о !, но элемент же может быть null, если его нет. Но при этом постоянные проверки выбешивают...
@@ -48,18 +50,54 @@ export default class App {
         const question = this.quiz.currentQuestion;
         if (!question)
             return;
+        if (!question.handleAnswerClick) {
+            throw new Error('Something went wrong');
+        }
         question.handleAnswerClick(this, event.target);
         this.displayNext();
+    }
+    handleChooseAnswer(event) {
+        const question = this.quiz.currentQuestion;
+        if (!question)
+            return;
+        console.log(question);
+        if (!question.handleChooseClick) {
+            throw new Error('Something went wrong');
+        }
+        question.handleChooseClick(this, event.target);
+    }
+    restartListeners() {
+        if (!this.elems.answerElem) {
+            throw new Error('Something went wrong');
+        }
+        this.elems.answerElem.removeEventListener('click', this.handleAnswerButtonClick);
+        this.elems.answerElem.removeEventListener('click', this.handleChooseAnswer);
+        this.elems.confirmBtnElem.removeEventListener('click', this.handleAnswerButtonClick);
+        const currentQuest = this.quiz.currentQuestion;
+        console.log(currentQuest);
+        if (!currentQuest)
+            throw new Error('something went wrong');
+        if (currentQuest.type === 'single') {
+            this.elems.answerElem.addEventListener('click', this.handleAnswerButtonClick);
+        }
+        else if (currentQuest.type === 'multiple') {
+            this.elems.answerElem.addEventListener('click', this.handleChooseAnswer);
+            this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
+        }
+        else if (currentQuest.type === 'open') {
+            this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
+        }
     }
     /**
      * Отображает следующий вопрос или отображает результат если тест заверешен.
      */
     displayNext() {
+        this.quiz.index += 1;
         if (!this.elems.answerElem || !this.elems.progressElem || !this.elems.questionElem)
             return;
         this.clearAll();
+        this.restartListeners();
         if (this.questionNumber <= this.maxQuestionNumber) {
-            this.quiz.index += 1;
             this.questionNumber += 1;
             this.render();
         }
@@ -94,17 +132,11 @@ export default class App {
      */
     displayAnswers() {
         const question = this.quiz.currentQuestion;
-        const answerElem = this.elems.answerElem;
-        if (!question || !answerElem)
-            return;
-        answerElem.innerHTML = '';
-        question.answers.forEach((answer, index) => {
-            let li = document.createElement('li');
-            li.className = 'list-group-item list-group-item-action';
-            li.id = index.toString();
-            li.innerHTML = answer;
-            answerElem.appendChild(li);
-        });
+        if (!question)
+            throw new Error('something went wrong');
+        if (!question.displayAnswers)
+            throw new Error('something went wrong');
+        question.displayAnswers(this);
     }
     /**
      * Отображает прогресс ('Вопрос 1 из 5').
@@ -112,7 +144,7 @@ export default class App {
     displayProgress() {
         if (!this.elems.progressElem)
             return;
-        this.elems.progressElem.textContent = `Question ${this.questionNumber} of ${this.maxQuestionNumber + 1}`;
+        this.elems.progressElem.textContent = `Question ${this.questionNumber + 1} of ${this.maxQuestionNumber + 1}`;
     }
     /**
      * Отображает результат теста.
