@@ -1,27 +1,48 @@
 import { IQuestion, Question } from './question';
 import { IQuiz, Quiz } from './quiz';
-
 //@codedojo хотел транпайлить в es5, но мне почему-то ни common, ни system не поддались для экспорта/импорта, поэтому решил через esnext
+
+interface IApp {
+  element: Element;
+  elems: {
+    headerElem?: Element | null;
+    questionElem: Element | null;
+    answerElem: Element | null;
+    progressElem: Element | null;
+    scoreElem: Element | null;
+    inputElem: Element;
+    confirmBtnElem: Element;
+  }
+  questionNumber: number;
+  rightAnswers: number;
+  maxQuestionNumber: number;
+  quiz: IQuiz;
+}
+
 
 export default class App {
   /**
    * @param {HTMLElement} element 
    * @param {Quiz} quiz 
    */
-  element: HTMLElement;
-  headerElem?: HTMLElement | null;
-  questionElem?: HTMLElement | null;
-  answerElem?: HTMLElement | null;
-  progressElem?: HTMLElement | null;
-  scoreElem?: HTMLElement | null;
-  questionNumber: number = -1;
-  rightAnswers: number = 0;
-  maxQuestionNumber: number;
-  quiz: IQuiz;
+  public element: Element;
+  public elems!: {
+    headerElem?: Element | null;
+    questionElem: Element | null;
+    answerElem: Element | null;
+    progressElem: Element | null;
+    scoreElem: Element | null;
+    inputElem: Element;
+    confirmBtnElem: Element;
+  }
+  public questionNumber: number = 0;
+  public rightAnswers: number = 0;
+  public maxQuestionNumber: number;
+  public quiz: IQuiz;
 
 
 
-  constructor(element: HTMLElement, quiz: IQuiz) {
+  constructor(element: Element, quiz: IQuiz) {
     this.element = element;
     this.quiz = quiz;
     this.maxQuestionNumber = quiz.questions.length-1;
@@ -35,16 +56,23 @@ export default class App {
    * Получает доступ к DOM-элементам, устанавливает заголовок и подписывается на событие при выборе ответа.
    */
   private init() {
-    this.headerElem = this.element.querySelector('h1'),
-      this.questionElem = document.getElementById('question'),
-      this.answerElem = document.getElementById('answers'),
-      this.progressElem = document.getElementById('progress');
-      this.scoreElem = document.getElementById('score');
-    if (!this.headerElem || !this.questionElem || !this.answerElem || !this.progressElem) {
+    this.elems = {
+      headerElem: this.element.querySelector('h1'),
+      questionElem: document.getElementById('question'),
+      answerElem: document.getElementById('answers'),
+      progressElem: document.getElementById('progress'),
+      scoreElem: document.getElementById('score'),
+      inputElem: document.createElement('input'),
+      confirmBtnElem: document.createElement('button'),
+    };
+    this.elems.confirmBtnElem.className = 'btn-success';
+    this.elems.inputElem.setAttribute('type', 'text');
+    this.elems.inputElem.className = 'form-control';
+    if (!this.elems.headerElem || !this.elems.answerElem) {
       throw new ReferenceError('Something is null!');
     } 
-    this.headerElem.textContent = this.quiz.title;
-    this.answerElem.addEventListener('click', this.handleAnswerButtonClick);
+    this.elems.headerElem.textContent = this.quiz.title;
+    this.elems.answerElem.addEventListener('click', this.handleAnswerButtonClick);
     /**@codedojo возник вопрос. Очевидно, тут некоторые элементы могут быть null/undefined. Я в init сделал проверку на то, что они не falsy. 
      * Но тайпскрипт не понял, что они дальше уже буду не null(именно в функциях) и надо выполпять дополнительную проверку(пример тот же displayQuestion). Это я где-то налажал, или как?
      * UPD: узнал о !, но элемент же может быть null, если его нет. Но при этом постоянные проверки выбешивают...
@@ -56,10 +84,13 @@ export default class App {
    * 
    * @param {Event} event 
    */
-  private handleAnswerButtonClick(event: any): void { //пришлось задавать ени, ибо TS не понимает, почему this.handleAnswerButtonClick без аргументов
-    if (!this.answerElem) return;
-    let answIndex = [...this.answerElem.childNodes].indexOf(event.target);
-    if (this.quiz.checkAnswer(answIndex)) this.rightAnswers += 1;
+  private handleAnswerButtonClick(event: any): void { //отличается в зависимости от answers
+    // if (!this.elems.answerElem) return; 
+    // let answIndex = [...this.elems.answerElem.childNodes].indexOf(event.target);
+    // if (this.quiz.checkAnswer(answIndex)) this.rightAnswers += 1;
+    const question = this.quiz.currentQuestion;
+    if (!question) return;
+    question.handleAnswerClick(this, event.target);
     this.displayNext();
   }
 
@@ -67,37 +98,36 @@ export default class App {
    * Отображает следующий вопрос или отображает результат если тест заверешен.
    */
   public displayNext(): void {
-    if (!this.answerElem || !this.progressElem || !this.questionElem) return;
+    if (!this.elems.answerElem || !this.elems.progressElem || !this.elems.questionElem) return;
     this.clearAll();
-    if (this.questionNumber + 1 <= this.maxQuestionNumber) {
+    if (this.questionNumber <= this.maxQuestionNumber) {
       this.quiz.index += 1;
       this.questionNumber += 1;
       this.render();
     } else {
       this.displayScore();
-      this.answerElem.removeEventListener('click', this.handleAnswerButtonClick);
+      this.elems.answerElem.removeEventListener('click', this.handleAnswerButtonClick);
     }
   }
 
-  public clearAll() {
-    if (!this.answerElem || !this.progressElem || !this.questionElem) return;
-    this.progressElem.textContent = '';
-    this.questionElem.textContent = '';
-    this.answerElem.innerHTML = '';
+  public clearAll() {// отличается(нужно добавлять/скрывать инпут/кнопку дальше)
+    if (!this.elems.answerElem || !this.elems.progressElem || !this.elems.questionElem) return;
+    this.elems.progressElem.textContent = '';
+    this.elems.questionElem.textContent = '';
+    this.elems.answerElem.innerHTML = '';
   }
 
   /**
    * Отображает вопрос.
    */
-  public displayQuestion(): void {
+  public displayQuestion(): void {// остается таким же
     const question = this.quiz.currentQuestion;
-    if (!question || !this.questionElem) return;
+    if (!question || !this.elems.questionElem) return;
 
-    this.questionElem.textContent = question.text;
+    this.elems.questionElem.textContent = question.text;
   }
 
-  public render(): void {
-    console.log(this.quiz.currentQuestion);
+  public render(): void { // остается таким же
     this.displayQuestion();
     this.displayAnswers();
     this.displayProgress();
@@ -106,9 +136,9 @@ export default class App {
   /**
    * Отображает ответы.
    */
-  public displayAnswers(): void {
+  public displayAnswers(): void { // отличается в зависимости от question.answers
     const question = this.quiz.currentQuestion;
-    const answerElem = this.answerElem;
+    const answerElem = this.elems.answerElem;
     if (!question || !answerElem) return;
     answerElem.innerHTML = '';
 
@@ -124,16 +154,18 @@ export default class App {
   /**
    * Отображает прогресс ('Вопрос 1 из 5').
    */
-  public displayProgress(): void {
-    if (!this.progressElem) return;
-    this.progressElem.textContent = `Question ${this.questionNumber+1} of ${this.maxQuestionNumber+1}`;
+  public displayProgress(): void {// остается таким же
+    if (!this.elems.progressElem) return;
+    this.elems.progressElem.textContent = `Question ${this.questionNumber} of ${this.maxQuestionNumber+1}`;
   }
 
   /**
    * Отображает результат теста.
    */
-  public displayScore(): void {
-    if (!this.scoreElem) return;
-    this.scoreElem.textContent = `У вас ${this.rightAnswers} правильных ответов из ${this.maxQuestionNumber+1}`;
+  public displayScore(): void {// остается таким же
+    if (!this.elems.scoreElem) return;
+    this.elems.scoreElem.textContent = `У вас ${this.rightAnswers} правильных ответов из ${this.maxQuestionNumber+1}`;
   }
 }
+
+export { IApp };

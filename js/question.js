@@ -1,6 +1,26 @@
+const withSingleBehavior = {
+    handleAnswerClick(app, target) {
+        if (!app.elems.answerElem)
+            return;
+        let answIndex = [...app.elems.answerElem.childNodes].indexOf(target);
+        if (app.quiz.checkAnswer(answIndex))
+            app.rightAnswers += 1;
+    }
+};
+const withMultipleBehavior = {
+    handleAnswerClick(app, target) {
+        if (!app.elems.answerElem)
+            return;
+        let answIndex = [...app.elems.answerElem.childNodes].indexOf(target);
+        if (app.quiz.checkAnswer(answIndex))
+            app.rightAnswers += 1;
+    }
+};
+const withOpenBehavior = {};
 class Question {
-    constructor(text, answers, correctAnswer) {
+    constructor(text, type, answers = [], correctAnswer) {
         this.text = text;
+        this.type = type;
         this.answers = answers;
         this.correctAnswer = correctAnswer;
     }
@@ -14,4 +34,4 @@ class Question {
         return answer === this.correctAnswer;
     }
 }
-export { Question };
+export { Question, withSingleBehavior, withOpenBehavior, withMultipleBehavior };
