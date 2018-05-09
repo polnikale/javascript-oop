@@ -14,6 +14,8 @@ interface IQuestion {
   clearAll?(app: IApp): void;
 }
 
+//@codedojo по-хорошему, можно было-бы поведение вынести в отдельный файл и эскпортировать его, но я уже слишком задолбался и еще дел куча, а хочу пораньше сдать. Как говориться, и так сойдет. xD
+
 const withSingleBehavior =  { // Скорее всего, в дочернем элементе изменять действие внешнего элемента - плохая практика, но я ничего лушче пока придумать не могу
   handleAnswerClick(app: IApp, target: Element): void {
     if (!app.elems.answerElem) return; 
@@ -113,8 +115,12 @@ const withOpenBehavior = {
     if (!quest) throw new Error('something went wrong!');
     if (this.checkAnswer(quest, answ)) app.rightAnswers += 1;
   },
-  checkAnswer(question: IQuestion, index: string) {
-    return question.correctAnswer === index;
+  checkAnswer(question: IQuestion, answ: string) {
+    if (typeof question.correctAnswer !== 'string') {
+      throw new Error('something went wrong!');
+    } else {
+      return question.correctAnswer.toUpperCase() == answ.toUpperCase();
+    }
   },
   displayAnswers(app: IApp): void { 
     if (!app.elems.confirmBtnElem || !app.elems.inputElem) throw new Error('something went wrong');

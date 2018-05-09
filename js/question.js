@@ -1,3 +1,4 @@
+//@codedojo по-хорошему, можно было-бы поведение вынести в отдельный файл и эскпортировать его, но я уже слишком задолбался и еще дел куча, а хочу пораньше сдать. Как говориться, и так сойдет. xD
 const withSingleBehavior = {
     handleAnswerClick(app, target) {
         if (!app.elems.answerElem)
@@ -107,8 +108,13 @@ const withOpenBehavior = {
         if (this.checkAnswer(quest, answ))
             app.rightAnswers += 1;
     },
-    checkAnswer(question, index) {
-        return question.correctAnswer === index;
+    checkAnswer(question, answ) {
+        if (typeof question.correctAnswer !== 'string') {
+            throw new Error('something went wrong!');
+        }
+        else {
+            return question.correctAnswer.toUpperCase() == answ.toUpperCase();
+        }
     },
     displayAnswers(app) {
         if (!app.elems.confirmBtnElem || !app.elems.inputElem)
