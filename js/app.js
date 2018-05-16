@@ -40,4 +40,13 @@ export default class App {
     handleCanvasMouseleave(event) {
         this.isDrawing = false;
     }
+
+    handleCanvasClear(event) {
+        this.context.fillStyle = 'white';
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    handleBrushSizeChange(event) {
+        this.context.lineWidth = Number(event.target.value);
+    }
 }
