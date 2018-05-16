@@ -2,6 +2,7 @@ interface IApp {
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D | null;
   closeBtn: Element | null;
+  changeBrushWidthInput: HTMLInputElement | null;
   isDrawing: Boolean;
   lastEvent?: Event; 
 
@@ -18,10 +19,11 @@ export default class App implements IApp {
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D | null;
   closeBtn!: Element | null;
+  changeBrushWidthInput!: HTMLInputElement | null;
   isDrawing: Boolean;
   lastEvent?: MouseEvent;
 
-  constructor({ canvas: HTMLCanvasElement }) {
+  constructor({canvas}: {canvas: HTMLCanvasElement}) {
     this.canvas = canvas;
 
     this.context = null;
@@ -38,8 +40,12 @@ export default class App implements IApp {
     this.canvas.addEventListener('mouseup', this.handleCanvasMouseup.bind(this));
     this.canvas.addEventListener('mouseleave', this.handleCanvasMouseleave.bind(this));
     this.closeBtn = document.querySelector('#clear-canvas-button');
+    this.changeBrushWidthInput = document.querySelector('#brush-size-slider');
     if (this.closeBtn) {
       this.closeBtn.addEventListener('click', this.handleCanvasClear.bind(this));
+    }
+    if (this.changeBrushWidthInput) {
+      this.changeBrushWidthInput.addEventListener('change', this.handleBrushSizeChange.bind(this));
     }
   }
 
@@ -79,6 +85,9 @@ export default class App implements IApp {
   }
 
   handleBrushSizeChange(event: MouseEvent) {
-    this.context.lineWidth = Number(event.target.value);
+    if (!this.context || !event.target) {
+      return;
+    }
+    this.context.lineWidth = Number(event.target.value); //ошибку показывает TS, не знаю как пофиксить
   }
 }

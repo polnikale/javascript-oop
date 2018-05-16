@@ -1,5 +1,5 @@
 export default class App {
-    constructor({ canvas: HTMLCanvasElement }) {
+    constructor({ canvas }) {
         this.canvas = canvas;
         this.context = null;
         this.isDrawing = false;
@@ -12,8 +12,12 @@ export default class App {
         this.canvas.addEventListener('mouseup', this.handleCanvasMouseup.bind(this));
         this.canvas.addEventListener('mouseleave', this.handleCanvasMouseleave.bind(this));
         this.closeBtn = document.querySelector('#clear-canvas-button');
+        this.changeBrushWidthInput = document.querySelector('#brush-size-slider');
         if (this.closeBtn) {
             this.closeBtn.addEventListener('click', this.handleCanvasClear.bind(this));
+        }
+        if (this.changeBrushWidthInput) {
+            this.changeBrushWidthInput.addEventListener('change', this.handleBrushSizeChange.bind(this));
         }
     }
     handleCanvasMousedown(event) {
@@ -47,6 +51,9 @@ export default class App {
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
     handleBrushSizeChange(event) {
-        this.context.lineWidth = Number(event.target.value);
+        if (!this.context || !event.target) {
+            return;
+        }
+        this.context.lineWidth = Number(event.target.value); //ошибку показывает TS, не знаю как пофиксить
     }
 }
