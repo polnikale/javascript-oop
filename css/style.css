@@ -86,6 +86,10 @@ button {
 	display: none;
 }
 
+#color-picker.open {
+	display: block;
+}
+
 #color-picker:after {
 	bottom: 100%;
 	left: 24px;
