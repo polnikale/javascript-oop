@@ -64,6 +64,6 @@ export default class App {
         if (!this.context || !target) {
             return;
         }
-        this.context.lineWidth = Number(target.value); //ошибку показывает TS, не знаю как пофиксить
+        this.context.lineWidth = Number(target.value);
     }
 }

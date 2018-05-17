@@ -1,6 +1,6 @@
 import App from './app.js';
 import { ColorPalette } from './color-palette.js';
-// import ColorPicker from './color-picker.js';
+import ColorPicker from './color-picker.js';
 const canvas = document.querySelector('canvas');
 const colorPaletteElem = document.querySelector('#color-palette');
 if (!canvas || !colorPaletteElem) {
@@ -16,4 +16,7 @@ new App({
             { red: 104, green: 178, blue: 91 }
         ]
     }),
+    colorPicker: new ColorPicker({
+        element: document.querySelector('#color-picker')
+    })
 });
