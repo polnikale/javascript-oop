@@ -1,30 +1,26 @@
-interface IApp {
-  canvas: HTMLCanvasElement;
-  context: CanvasRenderingContext2D | null;
-  closeBtn: Element | null;
-  changeBrushWidthInput: HTMLInputElement | null;
-  isDrawing: Boolean;
-  lastEvent?: Event; 
+import { IColorPalette } from './color-palette.js';
 
-  handleCanvasMousedown(event: MouseEvent): void;
-  handleCanvasMousemove(event: MouseEvent): void;
-  handleCanvasMouseup(event: MouseEvent): void;
-  handleCanvasMouseleave(event: MouseEvent): void;
-  handleCanvasClear(event: MouseEvent): void;
-  handleBrushSizeChange(event: MouseEvent): void;
+// interface IApp { Решил, что нет смысла реализовывать интерфейс ради простых хендлеров
+//   handleCanvasMousedown(event: MouseEvent): void;
+//   handleCanvasMousemove(event: MouseEvent): void;
+//   handleCanvasMouseup(event: MouseEvent): void;
+//   handleCanvasMouseleave(event: MouseEvent): void;
+//   handleCanvasClear(event: MouseEvent): void;
+//   handleBrushSizeChange(event: MouseEvent): void;
+// }
 
-}
+export default class App {
+  private canvas: HTMLCanvasElement;
+  private colorPalette: IColorPalette;
+  private context: CanvasRenderingContext2D | null;
+  private closeBtn!: Element | null;
+  private changeBrushWidthInput!: HTMLInputElement | null;
+  private isDrawing: Boolean;
+  private lastEvent?: MouseEvent;
 
-export default class App implements IApp {
-  canvas: HTMLCanvasElement;
-  context: CanvasRenderingContext2D | null;
-  closeBtn!: Element | null;
-  changeBrushWidthInput!: HTMLInputElement | null;
-  isDrawing: Boolean;
-  lastEvent?: MouseEvent;
-
-  constructor({canvas}: {canvas: HTMLCanvasElement}) {
+  constructor({canvas, colorPalette}: {canvas: HTMLCanvasElement, colorPalette: IColorPalette}) {
     this.canvas = canvas;
+    this.colorPalette = colorPalette;
 
     this.context = null;
     this.isDrawing = false;
@@ -62,7 +58,7 @@ export default class App implements IApp {
       this.context.beginPath();
       this.context.moveTo(this.lastEvent.offsetX, this.lastEvent.offsetY);
       this.context.lineTo(event.offsetX, event.offsetY);
-      this.context.strokeStyle = 'black';
+      this.context.strokeStyle = this.colorPalette.currentColor;
       this.context.stroke();
       this.lastEvent = event;
     }

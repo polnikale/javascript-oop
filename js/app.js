@@ -1,6 +1,15 @@
+// interface IApp { Решил, что нет смысла реализовывать интерфейс ради простых хендлеров
+//   handleCanvasMousedown(event: MouseEvent): void;
+//   handleCanvasMousemove(event: MouseEvent): void;
+//   handleCanvasMouseup(event: MouseEvent): void;
+//   handleCanvasMouseleave(event: MouseEvent): void;
+//   handleCanvasClear(event: MouseEvent): void;
+//   handleBrushSizeChange(event: MouseEvent): void;
+// }
 export default class App {
-    constructor({ canvas }) {
+    constructor({ canvas, colorPalette }) {
         this.canvas = canvas;
+        this.colorPalette = colorPalette;
         this.context = null;
         this.isDrawing = false;
         this.init();
@@ -32,7 +41,7 @@ export default class App {
             this.context.beginPath();
             this.context.moveTo(this.lastEvent.offsetX, this.lastEvent.offsetY);
             this.context.lineTo(event.offsetX, event.offsetY);
-            this.context.strokeStyle = 'black';
+            this.context.strokeStyle = this.colorPalette.currentColor;
             this.context.stroke();
             this.lastEvent = event;
         }

@@ -1,16 +1,17 @@
 type IColor =  { red: number, green: number, blue: number }[];
 
 interface IColorPalette {
-  readonly element: Element;
-  colors: IColor;
-  activeIndex: number;
+  colorPaletteHandler(event: MouseEvent): void;
+
+  currentColorElem: Element | null;
+  currentColor: string;
 }
 
 
-export default class ColorPalette implements IColorPalette {
-  readonly element: Element;
-  colors: IColor;
-  activeIndex!: number;
+class ColorPalette {
+  private element: Element;
+  private colors: IColor;
+  private activeIndex!: number;
   constructor({element, colors}: {element: Element, colors: IColor}) {
     this.element = element;
     this.colors = colors;
@@ -39,9 +40,25 @@ export default class ColorPalette implements IColorPalette {
     }
 
     if (this.activeIndex != null) {
-      this.element.childNodes[this.activeIndex].classList.remove('active');
+      this.element.children[this.activeIndex].classList.remove('selected');
     }
-    this.activeIndex = Array.from(this.element.childNodes).indexOf(target);
-    target.classList.add('active');
+    this.activeIndex = Array.from(this.element.children).indexOf(target);
+    target.classList.add('selected');
   }
+
+
+  get currentColorElem(): Element | null {
+    return this.element.children[this.activeIndex] || null;
+  }
+
+  get currentColor(): string {
+    const currElem = this.currentColorElem;
+    if (!currElem) {
+      return 'black';
+    }
+    return getComputedStyle(currElem).getPropertyValue('background-color') || 'black';
+  }
+
 }
+
+export {IColorPalette, ColorPalette};

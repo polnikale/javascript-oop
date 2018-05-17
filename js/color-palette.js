@@ -1,4 +1,4 @@
-export default class ColorPalette {
+class ColorPalette {
     constructor({ element, colors }) {
         this.element = element;
         this.colors = colors;
@@ -22,9 +22,20 @@ export default class ColorPalette {
             return;
         }
         if (this.activeIndex != null) {
-            this.element.childNodes[this.activeIndex].classList.remove('active');
+            this.element.children[this.activeIndex].classList.remove('selected');
         }
-        this.activeIndex = Array.from(this.element.childNodes).indexOf(target);
-        target.classList.add('active');
+        this.activeIndex = Array.from(this.element.children).indexOf(target);
+        target.classList.add('selected');
+    }
+    get currentColorElem() {
+        return this.element.children[this.activeIndex] || null;
+    }
+    get currentColor() {
+        const currElem = this.currentColorElem;
+        if (!currElem) {
+            return 'black';
+        }
+        return getComputedStyle(currElem).getPropertyValue('background-color') || 'black';
     }
 }
+export { ColorPalette };
