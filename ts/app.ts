@@ -81,9 +81,10 @@ export default class App {
   }
 
   handleBrushSizeChange(event: MouseEvent) {
-    if (!this.context || !event.target) {
+    const target = <HTMLInputElement>event.target;
+    if (!this.context || !target) {
       return;
     }
-    this.context.lineWidth = Number(event.target.value); //ошибку показывает TS, не знаю как пофиксить
+    this.context.lineWidth = Number(target.value); //ошибку показывает TS, не знаю как пофиксить
   }
 }

@@ -60,9 +60,10 @@ export default class App {
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
     handleBrushSizeChange(event) {
-        if (!this.context || !event.target) {
+        const target = event.target;
+        if (!this.context || !target) {
             return;
         }
-        this.context.lineWidth = Number(event.target.value); //ошибку показывает TS, не знаю как пофиксить
+        this.context.lineWidth = Number(target.value); //ошибку показывает TS, не знаю как пофиксить
     }
 }

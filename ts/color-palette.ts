@@ -1,14 +1,14 @@
 type IColor =  { red: number, green: number, blue: number }[];
 
 interface IColorPalette {
-  colorPaletteHandler(event: MouseEvent): void;
+  // colorPaletteHandler(event: MouseEvent): void; Хендлеры не вижу смысла добавлять в интерфейс
 
   currentColorElem: Element | null;
   currentColor: string;
 }
 
 
-class ColorPalette {
+class ColorPalette implements IColorPalette{
   private element: Element;
   private colors: IColor;
   private activeIndex!: number;
@@ -31,7 +31,7 @@ class ColorPalette {
   }
 
   colorPaletteHandler(event: MouseEvent): void {
-    let target = event.target;
+    let target = <Element>event.target;
     if (!target) {
       return;
     }
@@ -61,4 +61,4 @@ class ColorPalette {
 
 }
 
-export {IColorPalette, ColorPalette};
+export { IColorPalette, ColorPalette };
