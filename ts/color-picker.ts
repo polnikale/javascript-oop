@@ -2,27 +2,29 @@ interface IColorPicker {
 }
 
 export default class ColorPicker {
-  private element: Element;
-  private newColorBtn!: Element | null;
+  private element: HTMLElement;
+  private newColorBtn!: HTMLElement | null;
   private opened: Boolean = false;
-  private spanPreview!: Element | null;
-  private colorPickerSliders!: HTMLCollectionOf<HTMLInputElement> | null;
+  private spanPreview!: HTMLElement | null;
+  private colorPickerSliders!: NodeListOf<HTMLInputElement> | null;
 
 
-  constructor({element}: {element: Element}) {
+  constructor({element}: {element: HTMLElement}) {
     this.element = element;
 
-    this.changeSpanColorHandler = this.changeSpanColorHandler.bind(this);
+    this.handleChangeSpanColor = this.handleChangeSpanColor.bind(this);
 
     this.init();
   }
 
   init(): void {
     this.newColorBtn = document.querySelector('#new-color-button');
-    this.spanPreview = document.querySelector('')
-    this.colorPickerSliders = document.getElementsByClassName('color-picker__slider');
+    this.spanPreview = document.querySelector('color-picker__preview')
+    this.colorPickerSliders = document.querySelectorAll('input.color-picker__slider');
     if (!this.newColorBtn) return;
     this.newColorBtn.addEventListener('click', this.handleToggleColorClick.bind(this));
+
+    this.handleChangeSpanColor();
   }
 
   handleToggleColorClick(event: Event): void {
@@ -32,15 +34,15 @@ export default class ColorPicker {
         return;
       }
       Array.from(this.colorPickerSliders).forEach((slider) => {
-        slider.addEventListener('change', this.changeSpanColorHandler);
+        slider.addEventListener('change', this.handleChangeSpanColor);
       });
     }
     this.element.classList.toggle('open', this.opened);
   }
 
-  changeSpanColorHandler() {
+  handleChangeSpanColor() {
     let colorArr: string[] = [];
-    if (!this.colorPickerSliders) {
+    if (!this.colorPickerSliders || !this.spanPreview) {
       return;
     }
     Array.from(this.colorPickerSliders).forEach((slider) => {
