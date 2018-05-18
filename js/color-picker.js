@@ -17,18 +17,16 @@ export default class ColorPicker {
         if (!this.closeBtn)
             return;
         this.closeBtn.addEventListener('click', this.handleToggleColorClick);
+        if (!this.colorPickerSliders) {
+            return;
+        }
+        Array.from(this.colorPickerSliders).forEach((slider) => {
+            slider.addEventListener('input', this.handleChangeSpanColor);
+        });
         this.handleChangeSpanColor();
     }
     handleToggleColorClick(event) {
         this.opened = !this.opened;
-        if (this.opened) {
-            if (!this.colorPickerSliders) {
-                return;
-            }
-            Array.from(this.colorPickerSliders).forEach((slider) => {
-                slider.addEventListener('change', this.handleChangeSpanColor);
-            });
-        }
         this.element.classList.toggle('open', this.opened);
     }
     handleChangeSpanColor() {
