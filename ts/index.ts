@@ -23,5 +23,5 @@ new App({
 
     colorPicker: new ColorPicker({
         element: document.querySelector('#color-picker')
-    });
+    })
 });
