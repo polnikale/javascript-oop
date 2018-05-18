@@ -7,11 +7,19 @@ class ColorPalette {
     }
     init() {
         this.colors.forEach((color) => {
-            const colorLi = document.createElement('li');
-            colorLi.className = 'color-palette__color';
-            colorLi.style.backgroundColor = `rgb(${color.red}, ${color.green}, ${color.blue})`;
-            this.element.appendChild(colorLi);
+            this.createColor({
+                elemName: 'li',
+                className: 'color-palette__color',
+                color,
+                parent: this.element
+            });
         });
+    }
+    createColor({ elemName, className, color, parent = this.element }) {
+        const colorLi = document.createElement(elemName);
+        colorLi.className = className;
+        colorLi.style.backgroundColor = `rgb(${color.red}, ${color.green}, ${color.blue})`;
+        parent.appendChild(colorLi);
     }
     colorPaletteHandler(event) {
         let target = event.target;

@@ -7,9 +7,10 @@
 //   handleBrushSizeChange(event: MouseEvent): void;
 // }
 export default class App {
-    constructor({ canvas, colorPalette }) {
+    constructor({ canvas, colorPalette, colorPicker }) {
         this.canvas = canvas;
         this.colorPalette = colorPalette;
+        this.colorPicker = colorPicker;
         this.context = null;
         this.isDrawing = false;
         this.init();

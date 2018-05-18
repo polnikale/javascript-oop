@@ -1,4 +1,5 @@
 import { IColorPalette } from './color-palette.js';
+import { IColorPicker } from './color-picker.js';
 
 // interface IApp { Решил, что нет смысла реализовывать интерфейс ради простых хендлеров
 //   handleCanvasMousedown(event: MouseEvent): void;
@@ -12,15 +13,17 @@ import { IColorPalette } from './color-palette.js';
 export default class App {
   private canvas: HTMLCanvasElement;
   private colorPalette: IColorPalette;
+  private colorPicker: IColorPicker;
   private context: CanvasRenderingContext2D | null;
-  private closeBtn!: Element | null;
+  private closeBtn!: HTMLElement | null;
   private changeBrushWidthInput!: HTMLInputElement | null;
   private isDrawing: Boolean;
   private lastEvent?: MouseEvent;
 
-  constructor({canvas, colorPalette}: {canvas: HTMLCanvasElement, colorPalette: IColorPalette}) {
+  constructor({canvas, colorPalette, colorPicker}: {canvas: HTMLCanvasElement, colorPalette: IColorPalette, colorPicker: IColorPicker}) {
     this.canvas = canvas;
     this.colorPalette = colorPalette;
+    this.colorPicker = colorPicker;
 
     this.context = null;
     this.isDrawing = false;
@@ -35,6 +38,7 @@ export default class App {
     this.canvas.addEventListener('mousemove', this.handleCanvasMousemove.bind(this));
     this.canvas.addEventListener('mouseup', this.handleCanvasMouseup.bind(this));
     this.canvas.addEventListener('mouseleave', this.handleCanvasMouseleave.bind(this));
+    
     this.closeBtn = document.querySelector('#clear-canvas-button');
     this.changeBrushWidthInput = document.querySelector('#brush-size-slider');
     if (this.closeBtn) {

@@ -5,14 +5,21 @@ interface IColorPalette {
 
   currentColorElem: Element | null;
   currentColor: string;
+  createColor({elemName, className, color, parent}: 
+    {
+      elemName: string, 
+      className: string, 
+      color: IColor[0], 
+      parent?: HTMLElement
+    }):  void;
 }
 
 
 class ColorPalette implements IColorPalette{
-  private element: Element;
+  private element: HTMLElement;
   private colors: IColor;
   private activeIndex!: number;
-  constructor({element, colors}: {element: Element, colors: IColor}) {
+  constructor({element, colors}: {element: HTMLElement, colors: IColor}) {
     this.element = element;
     this.colors = colors;
 
@@ -23,15 +30,31 @@ class ColorPalette implements IColorPalette{
 
   init() {
     this.colors.forEach((color) => {
-      const colorLi = document.createElement('li');
-      colorLi.className = 'color-palette__color';
-      colorLi.style.backgroundColor = `rgb(${color.red}, ${color.green}, ${color.blue})`;
-      this.element.appendChild(colorLi);
+      this.createColor({
+        elemName: 'li', 
+        className: 'color-palette__color', 
+        color,
+        parent: this.element
+      });
     });
   }
 
+  createColor(
+    {elemName, className, color, parent = this.element}: 
+    {
+      elemName: string, 
+      className: string, 
+      color: IColor[0], 
+      parent?: HTMLElement
+    }): void {
+    const colorLi = document.createElement(elemName);
+    colorLi.className = className;
+    colorLi.style.backgroundColor = `rgb(${color.red}, ${color.green}, ${color.blue})`;
+    parent.appendChild(colorLi);
+  }
+
   colorPaletteHandler(event: MouseEvent): void {
-    let target = <Element>event.target;
+    let target = <HTMLElement>event.target;
     if (!target) {
       return;
     }
@@ -47,8 +70,8 @@ class ColorPalette implements IColorPalette{
   }
 
 
-  get currentColorElem(): Element | null {
-    return this.element.children[this.activeIndex] || null;
+  get currentColorElem(): HTMLElement | null {
+    return <HTMLElement>this.element.children[this.activeIndex] || null;
   }
 
   get currentColor(): string {
@@ -61,4 +84,4 @@ class ColorPalette implements IColorPalette{
 
 }
 
-export { IColorPalette, ColorPalette };
+export { IColorPalette, ColorPalette, IColor };
