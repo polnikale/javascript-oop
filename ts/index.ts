@@ -9,22 +9,21 @@ if (!canvas || !colorPaletteElem || !colorPickerElem) {
     throw new Error('Something missing sorry!');
 }
 
-let colorPalette = new ColorPalette({
-    element: <HTMLElement>colorPaletteElem,
-    colors: [
-        { red: 252, green: 76, blue: 79 },
-        { red: 79, green: 163, blue: 252 },
-        { red: 104, green: 178, blue: 91 }
-    ]
-});
+
 
 new App({
     canvas,
 
-    colorPalette,
+    colorPalette: new ColorPalette({
+        element: <HTMLElement>colorPaletteElem,
+        colors: [
+            { red: 252, green: 76, blue: 79 },
+            { red: 79, green: 163, blue: 252 },
+            { red: 104, green: 178, blue: 91 }
+        ]
+    }),
 
     colorPicker: new ColorPicker({
-        element: <HTMLElement>colorPickerElem,
-        colorPalette
+        element: <HTMLElement>colorPickerElem
     })
 });

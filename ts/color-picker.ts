@@ -1,22 +1,26 @@
 import { IColor, IColorPalette } from './color-palette.js';
 
 interface IColorPicker {
+  on(event: string, listener: (arg?: any) => void): void;
+  emit(event: string, arg: any): void;
 }
 
 class ColorPicker implements IColorPicker{
   private element: HTMLElement;
   private newColorBtn!: HTMLElement | null;
-  private colorPalette: IColorPalette;
   private opened: Boolean = false;
   private spanPreview!: HTMLElement | null;
   private colorPickerSliders!: NodeListOf<HTMLInputElement> | null;
   private closeBtn!: HTMLElement | null;
   private createNewBtn!: HTMLElement | null;
 
+  protected events: object;
 
-  constructor({element, colorPalette}: {element: HTMLElement, colorPalette: IColorPalette}) {
+
+  constructor({element}: {element: HTMLElement}) {
     this.element = element;
-    this.colorPalette = colorPalette;
+
+    this.events = {};
 
     this.handleChangeSpanColor = this.handleChangeSpanColor.bind(this);
     this.handleToggleColorClick = this.handleToggleColorClick.bind(this);
@@ -71,16 +75,26 @@ class ColorPicker implements IColorPicker{
       return;
     }
     Array.from(this.colorPickerSliders).forEach((slider) => {
-      colorObj.defineProperty(slider.name, slider.value); // тут на дефайнпроперти возмущается, очень интересно как пофиксить
+      colorObj[slider.name] = slider.value; // тут на дефайнпроперти возмущается, очень интересно как пофиксить
       slider.value = '0';
     })
-    this.colorPalette.createColor({
-      elemName: 'li',
-      className: 'color-palette__color',
-      color: colorObj
-    });
+    this.emit('colorAdd', colorObj)
     this.handleToggleColorClick();
     this.handleChangeSpanColor();
+  }
+
+
+  // реализация что-то типа eventEmitter
+
+  on(event: string, listener: (arg?: any) => void): void {
+    this.events[event] = this.events[event] || [];
+    this.events[event].push(listener);
+  }
+  emit(event: string, arg: any): void {
+    let myEvent = this.events[event] || [];
+    myEvent.forEach((listener: (arg?: any) => void) => {
+      listener(arg);
+    })
   }
 }
 

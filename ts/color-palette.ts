@@ -1,4 +1,4 @@
-type IColor =  { red: number, green: number, blue: number }[];
+type TColor =  { red: number, green: number, blue: number }[];
 
 interface IColorPalette {
   // colorPaletteHandler(event: MouseEvent): void; Хендлеры не вижу смысла добавлять в интерфейс
@@ -7,9 +7,9 @@ interface IColorPalette {
   currentColor: string;
   createColor({elemName, className, color, parent}: 
     {
-      elemName: string, 
-      className: string, 
-      color: IColor[0], 
+      elemName?: string, 
+      className?: string, 
+      color: TColor[0], 
       parent?: HTMLElement
     }):  void;
 }
@@ -17,7 +17,7 @@ interface IColorPalette {
 
 class ColorPalette implements IColorPalette{
   private element: HTMLElement;
-  private colors: IColor;
+  private colors: TColor;
   private activeIndex!: number;
   constructor({element, colors}: {element: HTMLElement, colors: IColor}) {
     this.element = element;
@@ -31,20 +31,17 @@ class ColorPalette implements IColorPalette{
   init() {
     this.colors.forEach((color) => {
       this.createColor({
-        elemName: 'li', 
-        className: 'color-palette__color', 
-        color,
-        parent: this.element
+        color
       });
     });
   }
 
   createColor(
-    {elemName, className, color, parent = this.element}: 
+    {elemName = 'li', className = 'color-palette__color', color, parent = this.element}: 
     {
-      elemName: string, 
-      className: string, 
-      color: IColor[0], 
+      elemName?: string, 
+      className?: string, 
+      color: TColor[0], 
       parent?: HTMLElement
     }): void {
     const colorLi = document.createElement(elemName);
@@ -84,4 +81,4 @@ class ColorPalette implements IColorPalette{
 
 }
 
-export { IColorPalette, ColorPalette, IColor };
+export { IColorPalette, ColorPalette, TColor };

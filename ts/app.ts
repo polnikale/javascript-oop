@@ -1,4 +1,4 @@
-import { IColorPalette } from './color-palette.js';
+import { IColorPalette, TColor } from './color-palette.js';
 import { IColorPicker } from './color-picker.js';
 
 // interface IApp { Решил, что нет смысла реализовывать интерфейс ради простых хендлеров
@@ -47,6 +47,10 @@ export default class App {
     if (this.changeBrushWidthInput) {
       this.changeBrushWidthInput.addEventListener('change', this.handleBrushSizeChange.bind(this));
     }
+
+    this.colorPicker.on('colorAdd', (color: TColor[0]) => {
+      this.colorPalette.createColor({color});
+    }); 
   }
 
   handleCanvasMousedown(event: MouseEvent) {

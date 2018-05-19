@@ -8,14 +8,11 @@ class ColorPalette {
     init() {
         this.colors.forEach((color) => {
             this.createColor({
-                elemName: 'li',
-                className: 'color-palette__color',
-                color,
-                parent: this.element
+                color
             });
         });
     }
-    createColor({ elemName, className, color, parent = this.element }) {
+    createColor({ elemName = 'li', className = 'color-palette__color', color, parent = this.element }) {
         const colorLi = document.createElement(elemName);
         colorLi.className = className;
         colorLi.style.backgroundColor = `rgb(${color.red}, ${color.green}, ${color.blue})`;

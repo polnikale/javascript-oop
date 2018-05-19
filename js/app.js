@@ -29,6 +29,9 @@ export default class App {
         if (this.changeBrushWidthInput) {
             this.changeBrushWidthInput.addEventListener('change', this.handleBrushSizeChange.bind(this));
         }
+        this.colorPicker.on('colorAdd', (color) => {
+            this.colorPalette.createColor({ color });
+        });
     }
     handleCanvasMousedown(event) {
         this.lastEvent = event;

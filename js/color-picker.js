@@ -1,8 +1,8 @@
 class ColorPicker {
-    constructor({ element, colorPalette }) {
+    constructor({ element }) {
         this.opened = false;
         this.element = element;
-        this.colorPalette = colorPalette;
+        this.events = {};
         this.handleChangeSpanColor = this.handleChangeSpanColor.bind(this);
         this.handleToggleColorClick = this.handleToggleColorClick.bind(this);
         this.handleAddNewBtn = this.handleAddNewBtn.bind(this);
@@ -50,16 +50,23 @@ class ColorPicker {
             return;
         }
         Array.from(this.colorPickerSliders).forEach((slider) => {
-            colorObj.defineProperty(slider.name, slider.value); // тут на дефайнпроперти возмущается, очень интересно как пофиксить
+            colorObj[slider.name] = slider.value; // тут на дефайнпроперти возмущается, очень интересно как пофиксить
             slider.value = '0';
         });
-        this.colorPalette.createColor({
-            elemName: 'li',
-            className: 'color-palette__color',
-            color: colorObj
-        });
+        this.emit('colorAdd', colorObj);
         this.handleToggleColorClick();
         this.handleChangeSpanColor();
+    }
+    // реализация что-то типа eventEmitter
+    on(event, listener) {
+        this.events[event] = this.events[event] || [];
+        this.events[event].push(listener);
+    }
+    emit(event, arg) {
+        let myEvent = this.events[event] || [];
+        myEvent.forEach((listener) => {
+            listener(arg);
+        });
     }
 }
 export { ColorPicker };
