@@ -87,7 +87,7 @@ class ColorPicker implements IColorPicker{
   // реализация что-то типа eventEmitter
 
   on(event: string, listener: (arg?: any) => void): void {
-    this.events[event] = this.events[event] || [];
+    this.events[event] = this.events[event] || []; // @codedojo мне тут ts жалуется на this.events[event]. Даже не знаю что делать.
     this.events[event].push(listener);
   }
   emit(event: string, arg: any): void {

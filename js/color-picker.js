@@ -59,7 +59,7 @@ class ColorPicker {
     }
     // реализация что-то типа eventEmitter
     on(event, listener) {
-        this.events[event] = this.events[event] || [];
+        this.events[event] = this.events[event] || []; // @codedojo мне тут ts жалуется на this.events[event]. Даже не знаю что делать.
         this.events[event].push(listener);
     }
     emit(event, arg) {
