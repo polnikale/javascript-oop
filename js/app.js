@@ -86,16 +86,9 @@ export default class App {
         this.elems.confirmBtnElem.removeEventListener('click', this.handleAnswerButtonClick);
         const currentQuest = this.quiz.currentQuestion;
         if (currentQuest) {
-            if (currentQuest.type === 'single') {
-                this.elems.answerElem.addEventListener('click', this.handleAnswerButtonClick);
-            }
-            else if (currentQuest.type === 'multiple') {
-                this.elems.answerElem.addEventListener('click', this.handleChooseAnswer);
-                this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
-            }
-            else if (currentQuest.type === 'open') {
-                this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
-            }
+            if (!this.quiz.currentQuestion || !this.quiz.currentQuestion.setHandler)
+                return;
+            this.quiz.currentQuestion.setHandler(this);
         }
     }
     /**

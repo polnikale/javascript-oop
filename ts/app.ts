@@ -14,6 +14,8 @@ interface IApp {
   clearAll(): void;
   displayNext(): void;
   restartListeners(): void;
+  handleAnswerButtonClick(event: MouseEvent): void;
+  handleChooseAnswer(event: MouseEvent): void;
   elems: {
     headerElem?: HTMLElement | null;
     questionElem: HTMLElement | null;
@@ -96,7 +98,7 @@ export default class App implements IApp {
    * 
    * @param {Event} event 
    */
-  private handleAnswerButtonClick(event: MouseEvent): void { //отличается в зависимости от answers
+  handleAnswerButtonClick(event: MouseEvent): void { //отличается в зависимости от answers
     // if (!this.elems.answerElem) return; 
     // let answIndex = [...this.elems.answerElem.childNodes].indexOf(event.target);
     // if (this.quiz.checkAnswer(answIndex)) this.rightAnswers += 1;
@@ -108,7 +110,7 @@ export default class App implements IApp {
     question.handleAnswerClick(this, <HTMLElement>event.target);
     this.displayNext();
   }
-  private handleChooseAnswer(event: MouseEvent): void {
+  handleChooseAnswer(event: MouseEvent): void {
     const question = this.quiz.currentQuestion;
     if (!question) return;
     if(!question.handleChooseClick) {
@@ -149,14 +151,8 @@ export default class App implements IApp {
 
     const currentQuest = this.quiz.currentQuestion;
     if (currentQuest) {
-      if (currentQuest.type === 'single') {
-        this.elems.answerElem.addEventListener('click', this.handleAnswerButtonClick);
-      } else if (currentQuest.type === 'multiple') {
-        this.elems.answerElem.addEventListener('click', this.handleChooseAnswer);
-        this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
-      } else if (currentQuest.type === 'open') {
-        this.elems.confirmBtnElem.addEventListener('click', this.handleAnswerButtonClick);
-      }
+      if (!this.quiz.currentQuestion || !this.quiz.currentQuestion.setHandler) return;
+      this.quiz.currentQuestion.setHandler(this);
     }
   }
 

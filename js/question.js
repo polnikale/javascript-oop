@@ -1,3 +1,32 @@
+class Question {
+    constructor(text, type, answers = [], correctAnswer) {
+        this._text = text;
+        this._type = type;
+        this._answers = answers;
+        this._correctAnswer = correctAnswer;
+    }
+    /**
+     * Проверяет правильность ответа.
+     *
+     * @param {number} answer
+     * @returns {boolean}
+     */
+    isCorrectAnswer(answer) {
+        return answer === this.correctAnswer;
+    }
+    get answers() {
+        return this._answers;
+    }
+    get correctAnswer() {
+        return this._correctAnswer;
+    }
+    get type() {
+        return this._type;
+    }
+    get text() {
+        return this._text;
+    }
+}
 //@codedojo по-хорошему, можно было-бы поведение вынести в отдельный файл и эскпортировать его, но я уже слишком задолбался и еще дел куча, а хочу пораньше сдать. Как говориться, и так сойдет. xD
 const withSingleBehavior = {
     handleAnswerClick(app, target) {
@@ -32,6 +61,11 @@ const withSingleBehavior = {
         app.elems.progressElem.textContent = '';
         app.elems.questionElem.textContent = '';
         app.elems.answerElem.innerHTML = '';
+    },
+    setHandler(app) {
+        if (!app.elems || !app.elems.answerElem)
+            return;
+        app.elems.answerElem.addEventListener('click', app.handleAnswerButtonClick);
     }
 };
 const withMultipleBehavior = {
@@ -68,7 +102,6 @@ const withMultipleBehavior = {
             app.chosenIndexes.splice(elemIndex, 1);
             target.classList.remove('active');
         }
-        console.log(app.chosenIndexes);
     },
     displayAnswers(app) {
         const question = app.quiz.currentQuestion;
@@ -94,6 +127,12 @@ const withMultipleBehavior = {
         app.elems.questionElem.textContent = '';
         app.elems.answerElem.innerHTML = '';
         app.elems.confirmBtnElem.classList.add('none');
+    },
+    setHandler(app) {
+        if (!app.elems || !app.elems.answerElem || !app.elems.confirmBtnElem)
+            return;
+        app.elems.answerElem.addEventListener('click', app.handleChooseAnswer);
+        app.elems.confirmBtnElem.addEventListener('click', app.handleAnswerButtonClick);
     }
 };
 const withOpenBehavior = {
@@ -130,22 +169,10 @@ const withOpenBehavior = {
         app.elems.confirmBtnElem.classList.add('none');
         app.elems.inputElem.classList.add('none');
     },
+    setHandler(app) {
+        if (!app.elems || !app.elems.confirmBtnElem)
+            return;
+        app.elems.confirmBtnElem.addEventListener('click', app.handleAnswerButtonClick);
+    }
 };
-class Question {
-    constructor(text, type, answers = [], correctAnswer) {
-        this.text = text;
-        this.type = type;
-        this.answers = answers;
-        this.correctAnswer = correctAnswer;
-    }
-    /**
-     * Проверяет правильность ответа.
-     *
-     * @param {number} answer
-     * @returns {boolean}
-     */
-    isCorrectAnswer(answer) {
-        return answer === this.correctAnswer;
-    }
-}
 export { Question, withSingleBehavior, withOpenBehavior, withMultipleBehavior };
