@@ -1,10 +1,8 @@
 export default class App {
     constructor(element, quiz) {
         this.questionNumber = -1;
-        this.rightAnswers = 0;
-        this.element = element;
-        this.quiz = quiz;
-        this.maxQuestionNumber = quiz.questions.length - 1;
+        this._element = element;
+        this._quiz = quiz;
         this.handleAnswerButtonClick = this.handleAnswerButtonClick.bind(this);
         this.handleChooseAnswer = this.handleChooseAnswer.bind(this);
         this.init();
@@ -15,7 +13,7 @@ export default class App {
      * Получает доступ к DOM-элементам, устанавливает заголовок и подписывается на событие при выборе ответа.
      */
     init() {
-        this.elems = {
+        this._elems = {
             headerElem: document.getElementById('title'),
             questionElem: document.getElementById('question'),
             answerElem: document.getElementById('answers'),
@@ -61,6 +59,24 @@ export default class App {
         }
         question.handleChooseClick(this, event.target);
     }
+    get elems() {
+        return this._elems;
+    }
+    set elems(value) {
+        this._elems = value;
+    }
+    get quiz() {
+        return this._quiz;
+    }
+    set quiz(value) {
+        this.quiz = value;
+    }
+    get element() {
+        return this._element;
+    }
+    set element(value) {
+        this._element = value;
+    }
     restartListeners() {
         if (!this.elems.answerElem || !this.elems.confirmBtnElem) {
             throw new Error('Something went wrong');
@@ -69,10 +85,7 @@ export default class App {
         this.elems.answerElem.removeEventListener('click', this.handleChooseAnswer);
         this.elems.confirmBtnElem.removeEventListener('click', this.handleAnswerButtonClick);
         const currentQuest = this.quiz.currentQuestion;
-        if (!currentQuest) {
-            this.displayScore();
-        }
-        else {
+        if (currentQuest) {
             if (currentQuest.type === 'single') {
                 this.elems.answerElem.addEventListener('click', this.handleAnswerButtonClick);
             }
@@ -94,8 +107,11 @@ export default class App {
         this.clearAll();
         this.quiz.index += 1;
         this.restartListeners();
-        if (this.questionNumber <= this.maxQuestionNumber) {
-            this.questionNumber += 1;
+        if (!this.quiz.hasEnded) {
+            this.displayScore();
+            this.quiz.index -= 1;
+        }
+        else {
             this.render();
         }
     }
@@ -127,10 +143,8 @@ export default class App {
      */
     displayAnswers() {
         const question = this.quiz.currentQuestion;
-        if (!question)
-            throw new Error('something went wrong');
-        if (!question.displayAnswers)
-            throw new Error('something went wrong');
+        if (!question || !question.displayAnswers)
+            return; // game is over
         question.displayAnswers(this);
     }
     /**
@@ -139,7 +153,7 @@ export default class App {
     displayProgress() {
         if (!this.elems.progressElem)
             return;
-        this.elems.progressElem.textContent = `Question ${this.questionNumber + 1} of ${this.maxQuestionNumber + 1}...${this.rightAnswers}`;
+        this.elems.progressElem.textContent = `Question ${this.quiz.index + 1} of ${this.quiz.maxQuestionNumber + 1}...${this.quiz.rightAnswers}`;
     }
     /**
      * Отображает результат теста.
@@ -147,6 +161,6 @@ export default class App {
     displayScore() {
         if (!this.elems.scoreElem)
             return;
-        this.elems.scoreElem.textContent = `У вас ${this.rightAnswers} правильных ответов из ${this.maxQuestionNumber + 1}`;
+        this.elems.scoreElem.textContent = `У вас ${this.quiz.rightAnswers} правильных ответов из ${this.quiz.maxQuestionNumber + 1}`;
     }
 }

@@ -6,7 +6,14 @@ import { IQuiz, Quiz } from './quiz';
 
 //@codedojo наверное displaySomething/EventHandler можно было-бы как-то вынести и преборазовать, но я не понимаю как.
 interface IApp {
-  element: Element;
+  displayScore(): void;
+  displayProgress(): void;
+  displayQuestion(): void;
+  displayAnswers(): void;
+  render(): void;
+  clearAll(): void;
+  displayNext(): void;
+  restartListeners(): void;
   elems: {
     headerElem?: HTMLElement | null;
     questionElem: HTMLElement | null;
@@ -15,12 +22,11 @@ interface IApp {
     scoreElem: HTMLElement | null;
     inputElem: HTMLInputElement | null;
     confirmBtnElem: HTMLElement | null;
-  }
-  chosenIndexes: number[];
-  questionNumber: number;
-  rightAnswers: number;
-  maxQuestionNumber: number;
+  };
+
   quiz: IQuiz;
+  chosenIndexes: number[];
+  element: Element;
 }
 
 
@@ -29,8 +35,8 @@ export default class App implements IApp {
    * @param {HTMLElement} element 
    * @param {Quiz} quiz 
    */
-  public element: Element;
-  public elems!: {
+  private _element: Element;
+  private _elems!: {
     headerElem?: HTMLElement | null;
     questionElem: HTMLElement | null;
     answerElem: HTMLElement | null;
@@ -40,17 +46,14 @@ export default class App implements IApp {
     confirmBtnElem: HTMLElement | null;
   }
   chosenIndexes!: number[];
-  public questionNumber: number = -1;
-  public rightAnswers: number = 0;
-  public maxQuestionNumber: number;
-  public quiz: IQuiz;
+  private questionNumber: number = -1;
+  private _quiz: IQuiz;
 
 
 
   constructor(element: Element, quiz: IQuiz) {
-    this.element = element;
-    this.quiz = quiz;
-    this.maxQuestionNumber = quiz.questions.length-1;
+    this._element = element;
+    this._quiz = quiz;
     this.handleAnswerButtonClick = this.handleAnswerButtonClick.bind(this);
     this.handleChooseAnswer = this.handleChooseAnswer.bind(this);
     this.init();
@@ -62,7 +65,7 @@ export default class App implements IApp {
    * Получает доступ к DOM-элементам, устанавливает заголовок и подписывается на событие при выборе ответа.
    */
   private init() {
-    this.elems = {
+    this._elems = {
       headerElem: document.getElementById('title'),
       questionElem: document.getElementById('question'),
       answerElem: document.getElementById('answers'),
@@ -93,7 +96,7 @@ export default class App implements IApp {
    * 
    * @param {Event} event 
    */
-  private handleAnswerButtonClick(event: any): void { //отличается в зависимости от answers
+  private handleAnswerButtonClick(event: MouseEvent): void { //отличается в зависимости от answers
     // if (!this.elems.answerElem) return; 
     // let answIndex = [...this.elems.answerElem.childNodes].indexOf(event.target);
     // if (this.quiz.checkAnswer(answIndex)) this.rightAnswers += 1;
@@ -102,19 +105,41 @@ export default class App implements IApp {
     if (!question.handleAnswerClick) {
       throw new Error('Something went wrong');
     }
-    question.handleAnswerClick(this, event.target);
+    question.handleAnswerClick(this, <HTMLElement>event.target);
     this.displayNext();
   }
-  private handleChooseAnswer(event: any): void {
+  private handleChooseAnswer(event: MouseEvent): void {
     const question = this.quiz.currentQuestion;
     if (!question) return;
     if(!question.handleChooseClick) {
       throw new Error('Something went wrong');
     }
-    question.handleChooseClick(this, event.target);
+    question.handleChooseClick(this, <HTMLElement>event.target);
   }
 
-  protected restartListeners(): void {
+  get elems() {
+    return this._elems;
+  }
+  set elems(value) {
+    this._elems = value;
+  }
+
+  get quiz() {
+    return this._quiz;
+  }
+  set quiz(value) {
+    this.quiz = value;
+  }
+  get element() {
+    return this._element;
+  }
+  set element(value) {
+    this._element = value;
+  }
+
+
+
+  public restartListeners(): void {
     if (!this.elems.answerElem || !this.elems.confirmBtnElem) {
       throw new Error('Something went wrong');
     }
@@ -123,9 +148,7 @@ export default class App implements IApp {
     this.elems.confirmBtnElem.removeEventListener('click', this.handleAnswerButtonClick);
 
     const currentQuest = this.quiz.currentQuestion;
-    if (!currentQuest) {
-      this.displayScore();
-    } else {
+    if (currentQuest) {
       if (currentQuest.type === 'single') {
         this.elems.answerElem.addEventListener('click', this.handleAnswerButtonClick);
       } else if (currentQuest.type === 'multiple') {
@@ -146,13 +169,15 @@ export default class App implements IApp {
     this.quiz.index += 1;
     this.restartListeners();
 
-    if (this.questionNumber <= this.maxQuestionNumber) {
-      this.questionNumber += 1;
+    if (!this.quiz.hasEnded) {
+      this.displayScore();
+      this.quiz.index -= 1;
+    } else {
       this.render();
     }
   }
 
-  public clearAll() {// отличается(нужно добавлять/скрывать инпут/кнопку дальше)
+  public clearAll(): void {// отличается(нужно добавлять/скрывать инпут/кнопку дальше)
     const question = this.quiz.currentQuestion;
     if (!question) return;
     if(!question.clearAll) {
@@ -182,8 +207,7 @@ export default class App implements IApp {
    */
   public displayAnswers(): void { // отличается в зависимости от question.answers
     const question = this.quiz.currentQuestion;
-    if (!question) throw new Error('something went wrong');
-    if (!question.displayAnswers) throw new Error('something went wrong');
+    if (!question || !question.displayAnswers) return; // game is over
     question.displayAnswers(this);
   }
 
@@ -192,7 +216,7 @@ export default class App implements IApp {
    */
   public displayProgress(): void {// остается таким же
     if (!this.elems.progressElem) return;
-    this.elems.progressElem.textContent = `Question ${this.questionNumber+1} of ${this.maxQuestionNumber+1}...${this.rightAnswers}`;
+    this.elems.progressElem.textContent = `Question ${this.quiz.index+1} of ${this.quiz.maxQuestionNumber+1}...${this.quiz.rightAnswers}`;
   }
 
   /**
@@ -200,7 +224,7 @@ export default class App implements IApp {
    */
   public displayScore(): void {// остается таким же
     if (!this.elems.scoreElem) return;
-    this.elems.scoreElem.textContent = `У вас ${this.rightAnswers} правильных ответов из ${this.maxQuestionNumber+1}`;
+    this.elems.scoreElem.textContent = `У вас ${this.quiz.rightAnswers} правильных ответов из ${this.quiz.maxQuestionNumber+1}`;
   }
 }
 

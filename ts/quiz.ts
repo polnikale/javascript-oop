@@ -1,10 +1,11 @@
 import { IQuestion, Question, TAnswer } from './question';
 interface IQuiz {
-  title: string;
-  questions: IQuestion[];
   index: number;
-  readonly currentQuestion: IQuestion | undefined;
-  readonly hasEnded: boolean;
+  currentQuestion: IQuestion | undefined;
+  hasEnded: boolean;
+  maxQuestionNumber: number;
+  rightAnswers: number;
+  readonly title: string;
 }
 
 class Quiz implements IQuiz {
@@ -12,13 +13,35 @@ class Quiz implements IQuiz {
    * @param {string} title 
    * @param {Question[]} quiestions 
    */
-  public title: string;
-  public index: number = -1;
+  readonly title: string;
+  private _index: number = -1;
+  private _maxQuestionNumber: number;
+  private _rightAnswers: number;
   questions: IQuestion[];
 
   constructor(title: string, questions: IQuestion[]) {
     this.title = title;
     this.questions = questions;
+    this._maxQuestionNumber = questions.length - 1;
+    this._rightAnswers = 0;
+  }
+
+  get index() {
+    return this._index;
+  }
+  set index(value) {
+    this._index = value;
+  }
+
+  get maxQuestionNumber() {
+    return this._maxQuestionNumber;
+  }
+
+  get rightAnswers() {
+    return this._rightAnswers;
+  }
+  set rightAnswers(value: number) {
+    this._rightAnswers = value;
   }
 
   /**
@@ -27,8 +50,7 @@ class Quiz implements IQuiz {
    * @returns {Question}
    */
   get currentQuestion(): IQuestion | undefined {
-    if (this.index < this.questions.length) return this.questions[this.index];
-    return undefined;
+    return this.questions[this.index];
   }
 
   /**
@@ -37,7 +59,7 @@ class Quiz implements IQuiz {
    * @returns {boolean}
    */
   get hasEnded(): boolean {
-    return this.currentQuestion !== null;
+    return this.currentQuestion !== undefined;
   }
   //@codedojo checkAnswer убрал, переложил это на композиционные методы
 }

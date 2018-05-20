@@ -1,8 +1,25 @@
 class Quiz {
     constructor(title, questions) {
-        this.index = -1;
+        this._index = -1;
         this.title = title;
         this.questions = questions;
+        this._maxQuestionNumber = questions.length - 1;
+        this._rightAnswers = 0;
+    }
+    get index() {
+        return this._index;
+    }
+    set index(value) {
+        this._index = value;
+    }
+    get maxQuestionNumber() {
+        return this._maxQuestionNumber;
+    }
+    get rightAnswers() {
+        return this._rightAnswers;
+    }
+    set rightAnswers(value) {
+        this._rightAnswers = value;
     }
     /**
      * Возвращает текущий вопрос.
@@ -10,9 +27,7 @@ class Quiz {
      * @returns {Question}
      */
     get currentQuestion() {
-        if (this.index < this.questions.length)
-            return this.questions[this.index];
-        return undefined;
+        return this.questions[this.index];
     }
     /**
      * Возвращает `true/false` в зависимости от того закончился тест или нет.
@@ -20,7 +35,7 @@ class Quiz {
      * @returns {boolean}
      */
     get hasEnded() {
-        return this.currentQuestion !== null;
+        return this.currentQuestion !== undefined;
     }
 }
 export { Quiz };

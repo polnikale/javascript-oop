@@ -22,7 +22,7 @@ const withSingleBehavior =  { // Скорее всего, в дочернем э
     let answIndex = [...app.elems.answerElem.childNodes].indexOf(target);
     let quest = app.quiz.currentQuestion;
     if (!quest) throw new Error('something went wrong!');
-    if (this.checkAnswer(quest, answIndex)) app.rightAnswers += 1;
+    if (this.checkAnswer(quest, answIndex)) app.quiz.rightAnswers += 1;
   },
   checkAnswer(question: IQuestion, index: number) {
     return question.correctAnswer === index;
@@ -45,7 +45,6 @@ const withSingleBehavior =  { // Скорее всего, в дочернем э
     app.elems.progressElem.textContent = '';
     app.elems.questionElem.textContent = '';
     app.elems.answerElem.innerHTML = '';
-    console.log('lol');
   }
 };
 
@@ -53,7 +52,7 @@ const withMultipleBehavior = {
   handleAnswerClick(app: IApp, target: Element): void {
     let quest = app.quiz.currentQuestion;
     if (!quest) throw new Error('something went wrong!');
-    if (this.checkAnswer(quest, app.chosenIndexes)) app.rightAnswers += 1;
+    if (this.checkAnswer(quest, app.chosenIndexes)) app.quiz.rightAnswers += 1;
   },
   checkAnswer(question: IQuestion, indexes: number[]): boolean {
     let elemsHaveEqualElems: boolean = true;
@@ -113,7 +112,7 @@ const withOpenBehavior = {
     let answ = app.elems.inputElem.value;
     let quest = app.quiz.currentQuestion;
     if (!quest) throw new Error('something went wrong!');
-    if (this.checkAnswer(quest, answ)) app.rightAnswers += 1;
+    if (this.checkAnswer(quest, answ)) app.quiz.rightAnswers += 1;
   },
   checkAnswer(question: IQuestion, answ: string) {
     if (typeof question.correctAnswer !== 'string') {

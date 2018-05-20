@@ -8,7 +8,7 @@ const withSingleBehavior = {
         if (!quest)
             throw new Error('something went wrong!');
         if (this.checkAnswer(quest, answIndex))
-            app.rightAnswers += 1;
+            app.quiz.rightAnswers += 1;
     },
     checkAnswer(question, index) {
         return question.correctAnswer === index;
@@ -32,7 +32,6 @@ const withSingleBehavior = {
         app.elems.progressElem.textContent = '';
         app.elems.questionElem.textContent = '';
         app.elems.answerElem.innerHTML = '';
-        console.log('lol');
     }
 };
 const withMultipleBehavior = {
@@ -41,7 +40,7 @@ const withMultipleBehavior = {
         if (!quest)
             throw new Error('something went wrong!');
         if (this.checkAnswer(quest, app.chosenIndexes))
-            app.rightAnswers += 1;
+            app.quiz.rightAnswers += 1;
     },
     checkAnswer(question, indexes) {
         let elemsHaveEqualElems = true;
@@ -106,7 +105,7 @@ const withOpenBehavior = {
         if (!quest)
             throw new Error('something went wrong!');
         if (this.checkAnswer(quest, answ))
-            app.rightAnswers += 1;
+            app.quiz.rightAnswers += 1;
     },
     checkAnswer(question, answ) {
         if (typeof question.correctAnswer !== 'string') {
