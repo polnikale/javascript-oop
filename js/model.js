@@ -10,13 +10,18 @@ export default class Model {
   addTodo(todo) {
     this._todo.push(todo);
   }
-  changeTodo(data) {
-    this._todo = this.todo.map((todo) => {
+  changeTodoList(data) {
+    const newTodo = [];
+    for (let todo of this.todo) {
       if (todo.title === data.title) {
-        return data;
+        if (data.type === 'change') {
+          newTodo.push({title: data.title, done: data.done}); //если type='delete', элемент не будет добавлен в новый массив
+        }
+      } else {
+      newTodo.push(todo);
       }
-      return todo;
-    });
+    }
+    this._todo = newTodo;
     console.log(this.todo);
   }
 }

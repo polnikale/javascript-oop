@@ -16,6 +16,7 @@ export default class View {
     this.addInput = document.querySelector('#add-input');
     this.todoList = document.querySelector('ul');
     this.todoForm = document.querySelector('#todo-form');
+    this._message = document.querySelector('#message');
     this.todoForm.addEventListener('submit', this.handleCreateNewTodo);
   
     this.todo = this.presenter.viewModel.todo;
@@ -23,6 +24,10 @@ export default class View {
 
   set todo(value) {
     this._todo = value;
+  }
+  
+  set message(value) {
+    this._message.textContent = value;
   }
 
   handleCreateNewTodo(event) {
@@ -42,8 +47,10 @@ export default class View {
     this.presenter.changeDone({todo, done, title});
   }
 
-  handleDeleteTodoItem() {
-
+  handleDeleteTodoItem(event) {
+    const todo = event.target.parentNode;
+    const title = todo.querySelector('label').textContent;
+    this.presenter.deleteTodo({todo, title});
   }
 
   
@@ -70,8 +77,13 @@ export default class View {
     this.todoList.appendChild(listItem);
   }
 
+  deleteTodo(todo) {
+    this.todoList.removeChild(todo);
+  }
+
   reset() {
     this.addInput.value = '';
+    this._message.textContent = '';
   }
 
   changeCompleted(data) {

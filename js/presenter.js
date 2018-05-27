@@ -21,17 +21,26 @@ export default class Presenter {
   }
 
   addTodo(title) {
-    if (title === '' || this.hasTheSameTitle(title)) { // незачем добавлять 2 одинаковых туду
+    if (title === '') { // незачем добавлять 2 одинаковых туду
       this.view.reset();
+      this.view.message = 'Nothing to do';
+      return;
+    } else if (this.hasTheSameTitle(title)) {
+      this.view.reset();
+      this.view.message = 'This kind of todo already exists';
       return;
     }
     this.model.addTodo({title, done: false});
     this.view.addTodo(title);
     this.view.reset();
   }
+  deleteTodo(data) {
+    this.model.changeTodoList({title: data.title, type: 'delete'});
+    this.view.deleteTodo(data.todo);
+  }
 
   changeDone(data) {
     this.view.changeCompleted({done: data.done, todo: data.todo});
-    this.model.changeTodo({title: data.title, done: data.done});
+    this.model.changeTodoList({title: data.title, done: data.done, type: 'change'});
   }
 }
