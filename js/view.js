@@ -20,6 +20,7 @@ export default class View {
     this.todoForm.addEventListener('submit', this.handleCreateNewTodo);
   
     this.todo = this.presenter.viewModel.todo;
+    this.createTodos();
   }
 
   set todo(value) {
@@ -58,6 +59,12 @@ export default class View {
     this.presenter.deleteTodo({todo, title});
   }
 
+  createTodos() {
+    this._todo.forEach((todo) => {
+      this.addTodo(todo);
+    });
+  }
+
   
   bindEvents(todoItem) {
     const checkbox = todoItem.querySelector('.checkbox');
@@ -69,13 +76,19 @@ export default class View {
     deleteButton.addEventListener('click', this.handleDeleteTodoItem);
   }
 
-  addTodo(title) {
+  addTodo({title, done = false}) {
+    let listClass;
+    if (done) {
+      listClass = 'todo-item completed';
+    } else {
+      listClass = 'todo-item';
+    }
     const checkbox = createElement('input', { type: 'checkbox', className: 'checkbox' });
     const label = createElement('label', { className: 'title' }, title);
     const editInput = createElement('input', { type: 'text', className: 'textfield' });
     const editButton = createElement('button', { className: 'edit' }, 'Изменить');
     const deleteButton = createElement('button', { className: 'delete' }, 'Удалить');
-    const listItem = createElement('li', { className: 'todo-item' }, checkbox, label, editInput, editButton, deleteButton);
+    const listItem = createElement('li', { className: listClass }, checkbox, label, editInput, editButton, deleteButton);
   
     this.bindEvents(listItem);
 
