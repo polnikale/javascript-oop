@@ -25,6 +25,28 @@ export default class View {
     this._todo = value;
   }
 
+  handleCreateNewTodo(event) {
+    event.preventDefault();
+
+    this.presenter.addTodo(this.addInput.value);
+
+  }
+
+  handleEditTodoItem(event) {
+  }
+
+  handleToggleTodoItem(event) {
+    const todo = event.target.parentNode;
+    const done = !(todo.classList.contains('completed'));
+    const title = todo.querySelector('label').textContent;
+    this.presenter.changeDone({todo, done, title});
+  }
+
+  handleDeleteTodoItem() {
+
+  }
+
+  
   bindEvents(todoItem) {
     const checkbox = todoItem.querySelector('.checkbox');
     const editButton = todoItem.querySelector('button.edit');
@@ -52,22 +74,8 @@ export default class View {
     this.addInput.value = '';
   }
 
-  handleCreateNewTodo(event) {
-    event.preventDefault();
-
-    this.presenter.addTodo(this.addInput.value);
-
-  }
-
-  handleEditTodoItem(event) {
-  }
-
-  handleToggleTodoItem(event) {
-    this.presenter.changeDone(event.target.parentNode);
-  }
-
-  handleDeleteTodoItem() {
-
+  changeCompleted(data) {
+    data.todo.classList.toggle('completed', data.done)
   }
 
 

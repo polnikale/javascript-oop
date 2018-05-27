@@ -10,4 +10,13 @@ export default class Model {
   addTodo(todo) {
     this._todo.push(todo);
   }
+  changeTodo(data) {
+    this._todo = this.todo.map((todo) => {
+      if (todo.title === data.title) {
+        return data;
+      }
+      return todo;
+    });
+    console.log(this.todo);
+  }
 }

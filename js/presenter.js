@@ -16,12 +16,12 @@ export default class Presenter {
     let todo = this.model.todo;
   }
 
-  get hasTheSameTitle() {
-    return this.viewModel.todo.find((elem) => elem.title === title) !== undefined;
+  hasTheSameTitle(title) {
+    return this.viewModel.todo.find((todo) => todo.title === title) !== undefined;
   }
 
   addTodo(title) {
-    if (title === '' || this.hasTheSameTitle) { // незачем добавлять 2 одинаковых туду
+    if (title === '' || this.hasTheSameTitle(title)) { // незачем добавлять 2 одинаковых туду
       this.view.reset();
       return;
     }
@@ -30,8 +30,8 @@ export default class Presenter {
     this.view.reset();
   }
 
-  changeDone(todoItem) {
-    todoItem.classList.toggle('completed');
-    const isCompleted = todItem.classList.includes('completed');
+  changeDone(data) {
+    this.view.changeCompleted({done: data.done, todo: data.todo});
+    this.model.changeTodo({title: data.title, done: data.done});
   }
 }
