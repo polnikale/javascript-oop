@@ -13,7 +13,7 @@ export default class Model {
   changeTodoList(data) {
     const newTodo = [];
     for (let todo of this.todo) {
-      if (todo.title === data.title) {
+      if (todo.title === data.title || todo.title === data.prevTitle) {
         if (data.type === 'change') {
           newTodo.push({title: data.title, done: data.done}); //если type='delete', элемент не будет добавлен в новый массив
         }

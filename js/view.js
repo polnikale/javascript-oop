@@ -38,6 +38,11 @@ export default class View {
   }
 
   handleEditTodoItem(event) {
+    const todo = event.target.parentNode;
+    const isEditing = todo.classList.contains('editing');
+    // @codedojo тут у меня вопрос. Как и в последующих. Стоит ли мне в presenter кидать дополнительную инфу, по типу title, done, isEditing и так далее?
+    const done = todo.classList.contains('completed');
+    this.presenter.editTodo({todo, isEditing, done});
   }
 
   handleToggleTodoItem(event) {
@@ -79,6 +84,22 @@ export default class View {
 
   deleteTodo(todo) {
     this.todoList.removeChild(todo);
+  }
+
+  saveEdit(todo) {
+    const title = todo.querySelector('.title');
+    const editInput = todo.querySelector('.textfield');
+    title.innerText = editInput.value;
+    todo.querySelector('.edit').textContent = 'Изменить';
+    todo.classList.toggle('editing', false);
+  }
+
+  openEdit(todo) {
+    const title = todo.querySelector('.title');
+    const editInput = todo.querySelector('.textfield');
+    editInput.value = title.innerText;
+    todo.querySelector('.edit').textContent = 'Сохранить';
+    todo.classList.toggle('editing', true);
   }
 
   reset() {

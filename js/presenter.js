@@ -34,9 +34,31 @@ export default class Presenter {
     this.view.addTodo(title);
     this.view.reset();
   }
+
   deleteTodo(data) {
     this.model.changeTodoList({title: data.title, type: 'delete'});
     this.view.deleteTodo(data.todo);
+  }
+
+  editTodo(data) {
+    this.view.reset();
+    if (data.isEditing) { // нужно сохранить
+      let title = data.todo.querySelector('.textfield').value;
+      let prevTitle = data.todo.querySelector('.title').textContent;
+      if (title === '') {
+        this.view.message = 'Туду не может быть пустым';
+        return;
+      }
+      this.view.saveEdit(data.todo);
+      this.model.changeTodoList({title, prevTitle, done: data.done, type: 'change'});
+    } else {
+      let title = data.todo.querySelector('.title').textContent;
+      if (title == '') {
+        this.view.message = 'Туду не может быть пустым!';
+        return;
+      }
+      this.view.openEdit(data.todo);
+    }
   }
 
   changeDone(data) {
