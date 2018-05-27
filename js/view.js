@@ -19,12 +19,8 @@ export default class View {
     this._message = document.querySelector('#message');
     this.todoForm.addEventListener('submit', this.handleCreateNewTodo);
   
-    this.todo = this.presenter.viewModel.todo;
+    this._todo = this.presenter.viewModel.todo;
     this.createTodos();
-  }
-
-  set todo(value) {
-    this._todo = value;
   }
   
   set message(value) {
@@ -34,8 +30,9 @@ export default class View {
   handleCreateNewTodo(event) {
     event.preventDefault();
 
-    this.presenter.addTodo(this.addInput.value);
+    console.log(this._todo);
 
+    this.presenter.addTodo(this.addInput.value);
   }
 
   handleEditTodoItem(event) {
@@ -78,17 +75,20 @@ export default class View {
 
   addTodo({title, done = false}) {
     let listClass;
+    const checkbox = createElement('input', { type: 'checkbox', className: 'checkbox' });
     if (done) {
       listClass = 'todo-item completed';
+      checkbox.checked = true;
     } else {
       listClass = 'todo-item';
     }
-    const checkbox = createElement('input', { type: 'checkbox', className: 'checkbox' });
     const label = createElement('label', { className: 'title' }, title);
     const editInput = createElement('input', { type: 'text', className: 'textfield' });
     const editButton = createElement('button', { className: 'edit' }, 'Изменить');
     const deleteButton = createElement('button', { className: 'delete' }, 'Удалить');
     const listItem = createElement('li', { className: listClass }, checkbox, label, editInput, editButton, deleteButton);
+
+    console.log(listItem);
   
     this.bindEvents(listItem);
 

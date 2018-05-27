@@ -9,7 +9,7 @@ export default class Presenter {
 
   get viewModel() {
     return Object.freeze({
-      todo: this.model.todo
+      todo: Array.from(this.model.todo)
     });
   }
   get todo() {
@@ -31,7 +31,7 @@ export default class Presenter {
       return;
     }
     this.model.addTodo({title, done: false});
-    this.view.addTodo(title);
+    this.view.addTodo({title});
     this.view.reset();
   }
 
