@@ -1,3 +1,11 @@
+import Model from './model.js';
+import Presenter from './presenter.js';
+import View from './view.js';
+
+let model = new Model();
+let presenter = new Presenter(model);
+let view = new View(presenter);
+presenter.init(view);
 // import { createElement } from './dom.js';
 
 // const todoForm = document.getElementById('todo-form');
@@ -73,12 +81,3 @@
 // }
 
 // main();
-
-import View from './view.js';
-import Model from './model.js';
-import Presenter from './presenter.js';
-
-let model = new Model();
-let presenter = new Presenter(model);
-let view = new View(presenter);
-presenter.init(view);

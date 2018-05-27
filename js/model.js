@@ -1,7 +1,10 @@
 export default class Model {
   constructor(todo = []) {
-    this._todo = todo;
-    console.log('akalalala');
+    this._todo = todo; // [{title: String, done: Boolean}]
+  }
+
+  get todo() {
+    return this._todo;
   }
 
   addTodo(todo) {
