@@ -1,6 +1,6 @@
 export default class Model {
   constructor(todo = []) {
-    this._todo = todo; // [{title: String, done: Boolean}]
+    this._todo = JSON.parse(localStorage.getItem('todos')) || todo; // [{title: String, done: Boolean}]
   }
 
   get todo() {
@@ -9,6 +9,7 @@ export default class Model {
 
   addTodo(todo) {
     this._todo.push(todo);
+    localStorage.setItem('todos', JSON.stringify(this._todo));
   }
   changeTodoList(data) {
     const newTodo = [];
@@ -22,6 +23,6 @@ export default class Model {
       }
     }
     this._todo = newTodo;
-    console.log(this.todo);
+    localStorage.setItem('todos', JSON.stringify(this._todo));
   }
 }
