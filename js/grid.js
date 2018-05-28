@@ -27,4 +27,14 @@ export default class Grid {
       cell.alive = false;
     });
   }
+
+  randomize() {
+    this.cells.forEach((cell) => {
+      cell.alive = Math.random() >= 0.5 ? true : false;
+    });
+  }
+
+  newLayer() {
+    
+  }
 }
