@@ -32,10 +32,12 @@ export default class Controls extends EventEmitter {
 
   handleToggleGame() {
     if (this.interval == null) {
+      this.playBtn.textContent = 'pause';
       this.interval = setInterval(() => {
         this.emitNewLayer();
       }, this.time); 
     } else {
+      this.playBtn.textContent = 'play_arrow';
       this.clearLayerInterval();
     }
   }

@@ -24,6 +24,19 @@ export default class Grid {
     }
   }
 
+  createFictionalGrid() {
+    const cells = [];
+    this.cells.forEach((row) => {
+      let newR = [];
+      row.forEach((cell) => {
+        let diedCell = {alive: false};
+        newR.push(diedCell);
+      });
+      cells.push(newR);
+    });
+    return cells;
+  }
+
   clear() {
     this.cells.forEach((row) => {
       row.forEach((cell) => {
@@ -40,26 +53,57 @@ export default class Grid {
     });
   }
 
+  
+
+  neighborIsAlive(row, col) {
+    if (row < 0 || col < 0 || row >= this.size || col >= this.size) return false;
+
+    const cell = this.cells[row][col];
+
+    if (cell && cell.alive) return true;
+  }
+
   newLayer() {
-    const cells = this.cells;
+    let cells = [];
     for (let rowI = 0; rowI < this.size; rowI += 1) {
+      let row = []
       for (let cellI = 0; cellI < this.size; cellI += 1) {
         let counter = 0;
-        const currentCell = cells[rowI][cellI];
-        if (cells[rowI-1][cellI-1].alive) counter += 1;
-        if (cells[rowI-1][cellI].alive) counter += 1;
-        if (cells[rowI-1][cellI+1].alive) counter += 1;
-        if (cells[rowI][cellI+1].alive) counter += 1;
-        if (cells[rowI+1][cellI+1].alive) counter += 1;
-        if (cells[rowI+1][cellI].alive) counter += 1;
-        if (cells[rowI+1][cellI-1].alive) counter += 1;
-        if (cells[rowI][cellI-1].alive) counter += 1;
+        const currentCell = this.cells[rowI][cellI];
+        let currentCellAlive;
+        if (this.neighborIsAlive(rowI-1, cellI-1)) counter += 1;
+        if (this.neighborIsAlive(rowI-1, cellI)) counter += 1;
+        if (this.neighborIsAlive(rowI-1, cellI+1)) counter += 1;
+        if (this.neighborIsAlive(rowI, cellI+1)) counter += 1;
+        if (this.neighborIsAlive(rowI+1, cellI+1)) counter += 1;
+        if (this.neighborIsAlive(rowI+1, cellI)) counter += 1;
+        if (this.neighborIsAlive(rowI+1, cellI-1)) counter += 1;
+        if (this.neighborIsAlive(rowI, cellI-1)) counter += 1;
 
         if (currentCell.alive) {
-          if (counter < 2) {
-            currentCell.alive = false;
+          if (counter < 2 || counter > 3) {
+            currentCellAlive = false;
+          } else {
+            console.log(counter);
+            currentCellAlive = true;
+          }
+        } else {
+          if (counter === 3) {
+            currentCellAlive = true;
           }
         }
+        row.push(currentCellAlive);
+      }
+      cells.push(row);
+    }
+    console.log(cells);
+    this.replaceRealGridWithFictional(cells);
+  }
+
+  replaceRealGridWithFictional(fakeGrid) {
+    for (let rowI = 0; rowI < this.size; rowI += 1) {
+      for (let cellI = 0; cellI < this.size; cellI += 1) {
+        fakeGrid[rowI][cellI] ? this.cells[rowI][cellI].live() : this.cells[rowI][cellI].die();
       }
     }
   }
