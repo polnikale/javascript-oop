@@ -46,11 +46,18 @@ export default class Controls extends EventEmitter {
   }
   
   handleRandomizeGame() {
-
+    this.clearLayerInterval();
+    this.emit('randomize');
   }
 
-  handleChangeSpeed() {
-
+  handleChangeSpeed(event) {
+    this.time = 1000 - event.target.value;
+    if (this.interval !== null) {
+      this.clearLayerInterval();
+      this.interval = setInterval(() => {
+        this.emitNewLayer();
+      }, this.time); 
+    }
   }
 
   emitNewLayer() {
