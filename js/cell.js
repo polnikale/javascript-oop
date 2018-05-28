@@ -16,12 +16,22 @@ export default class Cell {
   get alive() {
     return this._alive;
   }
-  set alive(value) {
-    this._alive = value;
-    this.cell.classList.toggle('alive', this._alive);
+
+  live() {
+    this._alive = true;
+    this.cell.classList.toggle('alive', true);
+  }
+
+  die() {
+    this._alive = false;
+    this.cell.classList.toggle('alive', false);
   }
 
   handleChangeAliveStatus() {
-    this.alive = !this.alive;
+    if (this.alive) {
+      this.die();
+    } else {
+      this.live();
+    }
   }
 }

@@ -13,10 +13,10 @@ export default class Grid {
   init() {
     this.table = document.createElement('table');
     this.gridElem.appendChild(this.table);
-    for (let row = 1; row <= this.size; row += 1) {
+    for (let row = 0; row < this.size; row += 1) {
       let tr = document.createElement('tr');
       let row = [];
-      for (let cell = 1; cell <= this.size; cell += 1) {
+      for (let cell = 0; cell < this.size; cell += 1) {
         row.push(new Cell({trElem: tr}));
       }
       this.table.appendChild(tr);
@@ -25,20 +25,42 @@ export default class Grid {
   }
 
   clear() {
-    this.cells.forEach((cell) => {
-      cell.alive = false;
+    this.cells.forEach((row) => {
+      row.forEach((cell) => {
+        cell.die();
+      });
     });
   }
 
   randomize() {
     this.cells.forEach((row) => {
       row.forEach((cell) => {
-        cell.alive = Math.random() >= 0.5 ? true : false;
+        Math.random() >= 0.5 ? cell.live() : cell.die();
       });
     });
   }
 
   newLayer() {
+    const cells = this.cells;
+    for (let rowI = 0; rowI < this.size; rowI += 1) {
+      for (let cellI = 0; cellI < this.size; cellI += 1) {
+        let counter = 0;
+        const currentCell = cells[rowI][cellI];
+        if (cells[rowI-1][cellI-1].alive) counter += 1;
+        if (cells[rowI-1][cellI].alive) counter += 1;
+        if (cells[rowI-1][cellI+1].alive) counter += 1;
+        if (cells[rowI][cellI+1].alive) counter += 1;
+        if (cells[rowI+1][cellI+1].alive) counter += 1;
+        if (cells[rowI+1][cellI].alive) counter += 1;
+        if (cells[rowI+1][cellI-1].alive) counter += 1;
+        if (cells[rowI][cellI-1].alive) counter += 1;
 
+        if (currentCell.alive) {
+          if (counter < 2) {
+            currentCell.alive = false;
+          }
+        }
+      }
+    }
   }
 }
