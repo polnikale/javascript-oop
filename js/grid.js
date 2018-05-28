@@ -24,19 +24,6 @@ export default class Grid {
     }
   }
 
-  createFictionalGrid() {
-    const cells = [];
-    this.cells.forEach((row) => {
-      let newR = [];
-      row.forEach((cell) => {
-        let diedCell = {alive: false};
-        newR.push(diedCell);
-      });
-      cells.push(newR);
-    });
-    return cells;
-  }
-
   clear() {
     this.cells.forEach((row) => {
       row.forEach((cell) => {
@@ -53,8 +40,6 @@ export default class Grid {
     });
   }
 
-  
-
   neighborIsAlive(row, col) {
     if (row < 0 || col < 0 || row >= this.size || col >= this.size) return false;
 
@@ -63,40 +48,45 @@ export default class Grid {
     if (cell && cell.alive) return true;
   }
 
+  countNeighborsAlive(rowI, cellI) {
+    let counter = 0;
+    if (this.neighborIsAlive(rowI-1, cellI-1)) counter += 1;
+    if (this.neighborIsAlive(rowI-1, cellI)) counter += 1;
+    if (this.neighborIsAlive(rowI-1, cellI+1)) counter += 1;
+    if (this.neighborIsAlive(rowI, cellI+1)) counter += 1;
+    if (this.neighborIsAlive(rowI+1, cellI+1)) counter += 1;
+    if (this.neighborIsAlive(rowI+1, cellI)) counter += 1;
+    if (this.neighborIsAlive(rowI+1, cellI-1)) counter += 1;
+    if (this.neighborIsAlive(rowI, cellI-1)) counter += 1;
+    
+    return counter;
+  }
+
   newLayer() {
     let cells = [];
     for (let rowI = 0; rowI < this.size; rowI += 1) {
       let row = []
       for (let cellI = 0; cellI < this.size; cellI += 1) {
-        let counter = 0;
+        let counter = this.countNeighborsAlive(rowI, cellI);
         const currentCell = this.cells[rowI][cellI];
-        let currentCellAlive;
-        if (this.neighborIsAlive(rowI-1, cellI-1)) counter += 1;
-        if (this.neighborIsAlive(rowI-1, cellI)) counter += 1;
-        if (this.neighborIsAlive(rowI-1, cellI+1)) counter += 1;
-        if (this.neighborIsAlive(rowI, cellI+1)) counter += 1;
-        if (this.neighborIsAlive(rowI+1, cellI+1)) counter += 1;
-        if (this.neighborIsAlive(rowI+1, cellI)) counter += 1;
-        if (this.neighborIsAlive(rowI+1, cellI-1)) counter += 1;
-        if (this.neighborIsAlive(rowI, cellI-1)) counter += 1;
+        let fakeCurrentCellAlive;
 
+        //не знаю насколько крутое решение, но я тут создаю еще одну матрицу, в которую записываю, живет клетка, или нет. После цикла уже перепиысываю всё в реальную сетку
         if (currentCell.alive) {
           if (counter < 2 || counter > 3) {
-            currentCellAlive = false;
+            fakeCurrentCellAlive = false;
           } else {
-            console.log(counter);
-            currentCellAlive = true;
+            fakeCurrentCellAlive = true;
           }
         } else {
           if (counter === 3) {
-            currentCellAlive = true;
+            fakeCurrentCellAlive = true;
           }
         }
-        row.push(currentCellAlive);
+        row.push(fakeCurrentCellAlive);
       }
       cells.push(row);
     }
-    console.log(cells);
     this.replaceRealGridWithFictional(cells);
   }
 

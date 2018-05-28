@@ -32,23 +32,31 @@ export default class Controls extends EventEmitter {
 
   handleToggleGame() {
     if (this.interval == null) {
-      this.playBtn.textContent = 'pause';
-      this.interval = setInterval(() => {
-        this.emitNewLayer();
-      }, this.time); 
+      this.play();
     } else {
-      this.playBtn.textContent = 'play_arrow';
-      this.clearLayerInterval();
+      this.pause();
     }
   }
 
-  handleResetGame() {
+  pause() {
+    this.playBtn.textContent = 'play_arrow';
     this.clearLayerInterval();
+  }
+
+  play() {
+    this.playBtn.textContent = 'pause';
+      this.interval = setInterval(() => {
+        this.emitNewLayer();
+      }, this.time); 
+  }
+
+  handleResetGame() {
+    this.pause();
     this.emit('clear');
   }
   
   handleRandomizeGame() {
-    this.clearLayerInterval();
+    this.pause();
     this.emit('randomize');
   }
 
