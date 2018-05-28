@@ -15,10 +15,12 @@ export default class Grid {
     this.gridElem.appendChild(this.table);
     for (let row = 1; row <= this.size; row += 1) {
       let tr = document.createElement('tr');
+      let row = [];
       for (let cell = 1; cell <= this.size; cell += 1) {
-        this.cells.push(new Cell({trElem: tr}));
+        row.push(new Cell({trElem: tr}));
       }
       this.table.appendChild(tr);
+      this.cells.push(row);
     }
   }
 
@@ -29,12 +31,14 @@ export default class Grid {
   }
 
   randomize() {
-    this.cells.forEach((cell) => {
-      cell.alive = Math.random() >= 0.5 ? true : false;
+    this.cells.forEach((row) => {
+      row.forEach((cell) => {
+        cell.alive = Math.random() >= 0.5 ? true : false;
+      });
     });
   }
 
   newLayer() {
-    
+
   }
 }
