@@ -21,4 +21,10 @@ export default class Grid {
       this.table.appendChild(tr);
     }
   }
+
+  clear() {
+    this.cells.forEach((cell) => {
+      cell.alive = false;
+    });
+  }
 }

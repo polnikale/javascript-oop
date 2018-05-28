@@ -16,14 +16,14 @@ export default class Game {
   }
 
   handleClear() {
-
+    this.grid.clear();
   }
 
   handleNewLayer() {
-
+    this.grid.newLayer();
   }
 
   handleRandomize() {
-
+    this.grid.randomize();
   }
 }
