@@ -13,13 +13,4 @@ export default class GridPresenter {
       grid: this.model.grid
     });
   }
-
-  gridClick(cell, rowI, cellI) {
-    if (this.model.grid[rowI][cellI].alive) {
-      this.model.grid[rowI][cellI].alive = false;
-    } else {
-      this.model.grid[rowI][cellI].alive = true;
-    }
-    this.view.changeCellColor(cell, rowI, cellI);
-  }
 }

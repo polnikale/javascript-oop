@@ -18,23 +18,6 @@ export default class GridView {
       });
       this.gridElement.appendChild(rowElem);
     });
-    this.gridElement.addEventListener('click', this.handleGridClick);
   }
 
-  handleGridClick(event) {
-    const cell = event.target;
-    const row = event.target.parentNode;
-    if (cell.tagName !== 'TD') return;
-    let rowI = [...this.gridElement.children].indexOf(row);
-    let cellI = [...row.children].indexOf(cell);
-    this.presenter.gridClick(event.target, rowI, cellI);
-  }
-
-  changeCellColor(cell, rowI, cellI) {
-    if (this.presenter.viewModel.grid[rowI][cellI].alive) {
-      cell.classList.toggle('alive', true);
-    } else {
-      cell.classList.toggle('alive', false);
-    }
-  }
 }
