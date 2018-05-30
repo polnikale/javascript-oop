@@ -1,8 +1,7 @@
 export default class gridModel {
-  constructor({size = 10, Cell}) {
+  constructor(size = 10) {
     this._size = size;
-    this._Cell = Cell;
-    this._cells = [];
+    this._grid = [];
     this.init();
   }
 
@@ -11,14 +10,14 @@ export default class gridModel {
       let tr = document.createElement('tr');
       let row = [];
       for (let cell = 0; cell < this._size; cell += 1) {
-        row.push(new this._Cell({trElem: tr}));
+        row.push({alive: Math.random() > 0.5 ? true : false});
       }
-      this._cells.push(row);
+      this._grid.push(row);
     }
   }
 
-  get cells() {
-    return this._cells;
+  get grid() {
+    return this._grid;
   }
 
   get size() {
