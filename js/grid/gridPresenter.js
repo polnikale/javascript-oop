@@ -13,4 +13,8 @@ export default class GridPresenter {
       grid: this.model.grid
     });
   }
+
+  gridClick(cell, rowI, cellI) {
+    this.view.toggle
+  }
 }
