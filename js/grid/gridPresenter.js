@@ -15,6 +15,11 @@ export default class GridPresenter {
   }
 
   gridClick(cell, rowI, cellI) {
-    this.view.toggle
+    if (this.model.grid[rowI][cellI].alive) {
+      this.model.grid[rowI][cellI].alive = false;
+    } else {
+      this.model.grid[rowI][cellI].alive = true;
+    }
+    this.view.changeCellColor(cell, rowI, cellI);
   }
 }
